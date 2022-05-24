@@ -7,6 +7,9 @@ import SideNavigation from './SideNavigation';
 /* services */
 import AuthService from '../../services/auth_service';
 
+/* css */
+import './side.navigation.css';
+
 const LeftSideContent = () => {
     const { id } = AuthService.getCurrentUser();
     let navigate = useNavigate();
@@ -18,7 +21,7 @@ const LeftSideContent = () => {
 
     return (
         <div id="sidebar-navigation" 
-            className="d-flex justify-content-between col-3 py-2 d-none d-lg-block"
+            className="col-3 d-none d-lg-block"
             style={{
                 position:'sticky',
                 top:0,

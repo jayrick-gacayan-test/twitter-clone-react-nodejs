@@ -14,10 +14,10 @@ import Dashboard from './components/Dashboard';
 import RegisterPage from './components/RegisterPage';
 import HomePage from './components/HomePage';
 import Profile from './components/Profile';
+import Tweet from './components/Tweet';
 
 /* context */
 import { AuthProvider } from './contexts/auth_context'
-
 
 function App(){
     return(
@@ -29,7 +29,8 @@ function App(){
                         element={ <HomePage /> }/>
                     <Route path="/profile/:userId"
                         element={ <Profile /> }/>
-                        
+                    <Route path="/tweets/:tweetId" 
+                        element={ <Tweet /> } />
                     <Route path="/dashboard" 
                         element={
                             <PrivateRoute>
@@ -50,7 +51,9 @@ function App(){
                                 <RegisterPage />
                             </ProtectedRoute>
                         }
-                    />          
+                    />
+                    <Route path="*"
+                        element={ <h1>404 not found</h1> }/>       
                 </Routes>
             </AuthProvider>
         </React.Fragment>

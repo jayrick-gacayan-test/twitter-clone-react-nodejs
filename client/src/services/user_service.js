@@ -6,12 +6,21 @@ const getUser = (userId) => {
     return axios.get(API_URL + `${userId}`);
 }
 
-const updateProfile = (firstName, lastName) => {
-    
+const updateProfile = (userId, firstName, lastName) => {
+    return axios.put(API_URL + `${ userId }`,
+        {
+            firstName,
+            lastName
+        },
+        {
+            headers : authHeader()
+        }
+    )
 };
 
 const UserService = {
-    getUser
+    getUser,
+    updateProfile
 }
 
 export default UserService;

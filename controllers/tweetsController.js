@@ -3,7 +3,12 @@ const Tweet = require("../models").Tweet;
 const User = require("../models").User;
 
 exports.show = (req, res) => {
-    return Tweet.findByPk(req.params.tweetId, {})
+    return Tweet.findByPk(req.params.tweetId, {
+                include : {
+                    model : User,
+                    attributes: [ "email", "firstName", "lastName" ]
+                }
+            })
             .then(
                 (tweet) => {
                     if(!tweet) return res.status(404).send({ error: "Tweet not found." });
@@ -21,7 +26,7 @@ exports.showAll = (req, res) => {
     return Tweet.findAll({
                     include: {
                         model: User,
-                        attributes:['email' ],
+                        attributes: [ "email" ],
                         where: {
                             id: userId
                         }

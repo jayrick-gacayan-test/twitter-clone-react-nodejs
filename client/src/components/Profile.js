@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 
@@ -9,12 +9,12 @@ import Modal from './layouts/Modal';
 
 /* services */
 import UserService from '../services/user_service';
-
+import AuthService from '../services/auth_service';
 
 const Profile = () => {
+    const { id } = AuthService.getCurrentUser();
     const { userId } = useParams();
     
-
     const initialPersonName = {
         firstName: "",
         lastName: ""
@@ -22,6 +22,8 @@ const Profile = () => {
 
     const [ user, setUser ] = useState({});
     const [ personName, setPersonName ] = useState(initialPersonName);
+    const [ thereUser, hasThereUser ] = useState(false);
+    const [ errorText, setErrorText ] = useState(null);
     
     useEffect(
         () => {
@@ -30,19 +32,35 @@ const Profile = () => {
                     (response) =>{
                         const { firstName, lastName } = response.data;
                         setUser(response.data);
+                        hasThereUser(true);
+                        setErrorText(null);
 
-                        if(firstName !== null ) setPersonName({ firstName });
-                        if(lastName !== null) setPersonName({ lastName });
+                        if(firstName !== null && lastName !== null) setPersonName({ ...personName, firstName, lastName });
+                        else{
+                            if(firstName !== null) setPersonName({ ...personName, firstName });
+                            else if(lastName !== null) setPersonName({ ...personName, lastName });
+                        }
                     },
-                    error => console.log(error)
+                    (error) => {
+                        console.log("Error ---- ",error);
+                        const resMessage =
+                            (error.response &&
+                            error.response.data &&
+                            error.response.data.error) ||
+                            error.message ||
+                            error.toString() || error;
+
+                        setErrorText(resMessage);
+                        hasThereUser(false);
+                    }
                 );
-            
-            
         }
         ,[ userId ]
     );
 
     const joinedAt = !user ? null : new Date(user.createdAt);
+    const firstName = user.firstName !== null ? user.firstName : "";
+    const lastName = user.lastName !== null ? user.lastName : "";
     
     const showModal = () => {
         const modalRef = document.getElementById('editProfileModal');
@@ -53,8 +71,11 @@ const Profile = () => {
                     keyboard: false
                 }
         );
-
+        
         bsModal.show();
+            
+        
+
     }
 
     const hideModal = () => {
@@ -64,8 +85,9 @@ const Profile = () => {
 
         const { firstName, lastName } = user;
 
-        if(firstName !== null) setPersonName({ firstName });
-        else if(lastName !== null) setPersonName({ lastName });
+        if(firstName !== null) setPersonName({ ...personName, firstName });
+                        
+        if(lastName !== null) setPersonName({ ...personName, lastName });
         else setPersonName(initialPersonName);
     }
 
@@ -78,7 +100,21 @@ const Profile = () => {
     const handleEditProfileSubmit = (event) => {
         event.preventDefault();
 
-        if(!personName.firstName || !personName.lastName) return;
+        if(!personName.firstName || !personName.lastName){
+            alert("Input fields are required.");
+            return;
+        }
+        
+        const { firstName, lastName } = personName;
+        UserService.updateProfile(userId, firstName, lastName)
+            .then(
+                (response) => {
+                    console.log("Response ", response.data); 
+                    setUser({ ...user, ...personName });
+                },
+                (error) => { console.log("Error ---- ", error); }
+            );
+        hideModal();
     }
 
     return (
@@ -92,68 +128,96 @@ const Profile = () => {
                         <h4>Profile</h4>
                     </div>
                     <hr className="m-0"/>
-                    <div className="container-fluid py-2 px-3">
-                        <button type="button" 
-                            className="btn btn-outline-info rounded-pill float-end" 
-                            onClick={ showModal }>Edit Profile</button>
-                        <p className="font-weight-bold mt-3">
-                            <span className="h4">@ { user.email }</span>
-                            <span className="d-block">
-                                Joined { " " }
-                                { user && joinedAt.toLocaleString("default", { month: "long" }) } { " " }
-                                { joinedAt.getDate() }, { joinedAt.getFullYear() } 
-                            </span>
-                            
-                        </p>    
-                    </div>
-                    
+                    {
+                        errorText &&
+                        (
+                            <div className="container-fluid py-2 px-3">
+                                <div className="alert alert-danger">
+                                    { errorText }
+                                </div>
+                            </div>
+                        )
+                    }
+                    {   
+                        thereUser &&    
+                        (
+                            <div className="container-fluid py-2 px-3">
+                                {
+                                    id === user.id && 
+                                    (
+                                        <button type="button" 
+                                            className="btn btn-outline-info rounded-pill float-end" 
+                                            onClick={ showModal }>Edit Profile</button>
+                                    )
+                                }
+                                
+                                <p className="font-weight-bold mt-3">
+                                    <span className="fs-5 me-1 text-dark fw-bold">{ `${ firstName } ${ lastName }`}</span>
+                                    <span className="lead fs-5 align-baseline">@ { user.email }</span>
+                                    <span className="d-block">
+                                        Joined { " " }
+                                        { user && joinedAt.toLocaleString("default", { month: "long" }) } { " " }
+                                        { joinedAt.getDate() }, { joinedAt.getFullYear() } 
+                                    </span>
+                                    
+                                </p>    
+                            </div>
+                        )
+                    }
                     <hr/>
                     
                 </main>
                 <RightSideContent />
             </div>
-            <Modal idModal="editProfileModal">
-                <div className="modal-header">
-                    <h4 className="modal-title">Edit Profile</h4>
-                    <button type="button" 
-                        className="btn-close"
-                        onClick={ hideModal }></button>
-                </div>
+            {
+                thereUser && 
+                (
+                    <Modal idModal="editProfileModal">
+                        <div className="modal-header">
+                            <h4 className="modal-title">Edit Profile</h4>
+                            <button type="button" 
+                                className="btn-close"
+                                onClick={ hideModal }></button>
+                        </div>
 
-                <div className="modal-body">
-                    <form onSubmit={
-                        handleEditProfileSubmit
-                    }>
-                        <div className="form-floating mb-3 mt-3">
-                            <input type="text" 
-                                className="form-control" 
-                                id="firstName" 
-                                placeholder="Enter firstname: " 
-                                name="firstName"
-                                value={ personName.firstName }
-                                onChange={ handleInputChange } />
-                            <label htmlFor="firstName">Firstname: </label>
+                        <div className="modal-body">
+                            <form id="formProfileEdit" onSubmit={
+                                handleEditProfileSubmit
+                            }>
+                                <div className="form-floating mb-3 mt-3">
+                                    <input type="text" 
+                                        className="form-control" 
+                                        id="firstName" 
+                                        placeholder="Enter firstname: " 
+                                        name="firstName"
+                                        value={ personName.firstName }
+                                        onChange={ handleInputChange } />
+                                    <label htmlFor="firstName">Firstname: </label>
+                                </div>
+                                <div className="form-floating mb-3 mt-3">
+                                    <input type="text" 
+                                        className="form-control" 
+                                        id="lastName" 
+                                        placeholder="Enter lastname: " 
+                                        name="lastName"
+                                        value={ personName.lastName }
+                                        onChange={ handleInputChange } />
+                                    <label htmlFor="lastName">Lastname: </label>
+                                </div>
+                            </form>
                         </div>
-                        <div className="form-floating mb-3 mt-3">
-                            <input type="text" 
-                                className="form-control" 
-                                id="lastName" 
-                                placeholder="Enter lastname: " 
-                                name="lastName"
-                                value={ personName.lastName }
-                                onChange={ handleInputChange } />
-                            <label htmlFor="lastName">Lastname: </label>
+                        <div className="modal-footer">
+                            <button type="button" 
+                                className="btn btn-danger" 
+                                onClick={ hideModal }>Close</button>
+                            <button type="submit"
+                                form="formProfileEdit"
+                                className="btn btn-primary">Update</button>
                         </div>
-                        <button type="submit"
-                            className="btn btn-primary text-white">Edit</button>
-                    </form>
-                </div>
-                <div className="modal-footer">
-                    <button type="button" 
-                        className="btn btn-danger" 
-                        onClick={ hideModal }>Close</button>
-                </div>
-            </Modal>
+                    </Modal>
+                )
+            }
+            
         </React.Fragment>
     );
 }

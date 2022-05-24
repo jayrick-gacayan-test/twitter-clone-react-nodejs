@@ -42,17 +42,15 @@ const RightSideContent = () => {
                                     }}
                                 />
                             </div>
-                            <div className="flex-grow-1">
-                                <div className="d-flex flex-xl-row">
-                                    <div className="">
-                                        <p className="font-weight-bold">Name
-                                            <a className="text-secondary d-block text-decoration-none" 
-                                                href="#">Link username</a>
-                                        </p>
-                                    </div>
-                                    <div className="ms-xl-auto">
-                                        <button className="btn btn-outline-info">Follow</button>
-                                    </div>
+                            <div className="flex-grow-1 bg-light d-flex flex-xxl">
+                                <div className="">
+                                    <p className="font-weight-bold">Name
+                                        <a className="text-secondary d-block text-decoration-none" 
+                                            href="#">Link username</a>
+                                    </p>
+                                </div>
+                                <div className="ms-xxl-auto">
+                                    <button className="btn btn-outline-info">Follow</button>
                                 </div>
                             </div>
                         </li>

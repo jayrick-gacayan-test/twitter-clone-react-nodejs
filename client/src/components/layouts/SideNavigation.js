@@ -2,11 +2,12 @@ import React from 'react';
 
 const SideNavigation = ({ userId }) => {
     return (
-        <nav className="navbar navbar-light bg-white d-flex flex-column">
-            <div className="container-fluid d-flex">
-                <ul className="navbar-nav d-flex">
+        <nav className="navbar navbar-light bg-light bg-white">
+            <div className="container-fluid">
+                <ul className="navbar-nav">
                     <li className="nav-item mb-3">
-                        <a className="navbar-brand" href="/dashboard">
+                        <a className="navbar-brand" 
+                            href="/dashboard">
                             <svg xmlns="http://www.w3.org/2000/svg" 
                                 fill="currentColor" 
                                 className="bi bi-twitter text-info" 
@@ -22,7 +23,8 @@ const SideNavigation = ({ userId }) => {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="/dashboard">
+                        <a className="nav-link fs-2" 
+                            href="/dashboard">
                             <h6>
                                 <i className="bi bi-house-door-fill me-3"></i>
                                 Home
@@ -30,7 +32,8 @@ const SideNavigation = ({ userId }) => {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href={ `/profile/${ userId }` }>
+                        <a className="nav-link fs-2" 
+                            href={ `/profile/${ userId }` }>
                             <h6>
                                 <i className="bi bi-person-fill me-3"></i>
                                 Profile
@@ -38,7 +41,8 @@ const SideNavigation = ({ userId }) => {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">
+                        <a className="nav-link fs-2 active" 
+                            href={ void(0) }>
                             <h6>
                                 <i className="bi bi-card-text me-3"></i>
                                 List

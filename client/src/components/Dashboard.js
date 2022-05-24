@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -10,6 +11,7 @@ import TweetService from '../services/tweet_service';
 
 /* Dummy Image */
 import DummyImage from './layouts/DummyImage';
+
 
 const Dashboard = () => {
     const { id } = AuthService.getCurrentUser();
@@ -28,8 +30,6 @@ const Dashboard = () => {
             fetchUserTweets(id);
         }, []
     );
-
-    
     
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -123,54 +123,56 @@ const Dashboard = () => {
                                     const tweetDate = new Date(tweet.createdAt)
                                     return (
                                         <React.Fragment key={ tweet.id }>
-                                            <div  
-                                                className="d-flex flex-grow-1 align-content-stretch">
-                                                <div className="me-2 ms-3">
-                                                    <DummyImage 
-                                                        className="bg-light text-dark"
-                                                        style={{
-                                                            width: "60px",
-                                                            height: "60px",
-                                                            maxWidth: "60px",
-                                                            maxHeight: "60px",
-                                                        }}
-                                                    />
+                                            <Link to={ `/tweets/${ tweet.id }`}
+                                                className="text-decoration-none text-dark">
+                                                <div className="d-flex">
+                                                    <div className="ms-3">
+                                                        <DummyImage 
+                                                            className="bg-light text-dark"
+                                                            style={{
+                                                                width: "60px",
+                                                                height: "60px",
+                                                                maxWidth: "60px",
+                                                                maxHeight: "60px",
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="flex-grow-1 px-3">
+                                                        <div className="d-flex">
+                                                            <span className="me-1">{ tweet.User.firstName } { tweet.User.lastName }</span>
+                                                            <span className="me-1">@{ tweet.User.email }</span>
+                                                            <span className="me-1">
+                                                                { tweetDate.toLocaleString("default", { month: "short" }) }
+                                                                {" "}
+                                                                { tweetDate.getDate() }{" "}
+                                                                { new Date().getFullYear() !== tweetDate.getFullYear() &&
+                                                                    tweetDate.getFullYear() }
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <p>{ tweet.content }</p>
+                                                        </div>
+                                                        <div className="d-flex justify-content-between">
+                                                            <div>
+                                                                <span>
+                                                                    <i className="bi bi-heart"></i>
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <span>
+                                                                    <i className="bi bi-heart"></i>
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <span>
+                                                                    <i className="bi bi-heart"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="align-self-stretch">
-                                                    <div>
-                                                        <span className="me-1">{ tweet.User.firstName } { tweet.User.lastName }</span>
-                                                        <span className="me-1">@{ tweet.User.email }</span>
-                                                        <span className="me-1">
-                                                            { tweetDate.toLocaleString("default", { month: "short" }) }
-                                                            {" "}
-                                                            { tweetDate.getDate() }{" "}
-                                                            { new Date().getFullYear() !== tweetDate.getFullYear() &&
-                                                                tweetDate.getFullYear() }
-                                                        </span>
-                                                    </div>
-                                                    <div>
-                                                        <p>{ tweet.content }</p>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between">
-                                                        <div>
-                                                            <span>
-                                                                <i className="bi bi-heart"></i>
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <span>
-                                                                <i className="bi bi-heart"></i>
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <span>
-                                                                <i className="bi bi-heart"></i>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <hr />
+                                                <hr />
+                                            </Link>
                                         </React.Fragment>
                                     )
                                 }

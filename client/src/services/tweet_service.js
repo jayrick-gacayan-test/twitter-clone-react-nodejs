@@ -19,9 +19,19 @@ const getUserTweets = (userId) => {
     return axios.get(API_URL + `?userId=${ userId }`);
 }
 
+const getTweet = (id) => {
+    return axios.get(API_URL + `${ id }`);
+}
+
+const deleteTweet = (id) => {
+    return axios.delete(API_URL + `${ id }`);
+}
+
 const TweetService = {
     createTweet,
-    getUserTweets
+    getUserTweets,
+    getTweet,
+    deleteTweet
 }
 
 export default TweetService;

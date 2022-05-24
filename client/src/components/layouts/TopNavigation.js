@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-
 import AuthService from '../../services/auth_service';
-
-
 
 const TopNavigation = () => {
 
@@ -26,7 +23,8 @@ const TopNavigation = () => {
     return (
         <nav className="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
             <div className="container">
-                <a className="navbar-brand">Twitter Logo</a>
+                <a className="navbar-brand"
+                    href={ void(0) }>Twitter Logo</a>
                 <div className="collapse navbar-collapse" id="collapsibleTopNavigation">
                     <ul className="navbar-nav me-md-auto">
                         <li className="nav-item">
