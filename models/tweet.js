@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       Tweet.belongsTo( models.User, {
         foreignKey: 'userId',
         onDelete: 'CASCADE',
-     } );
+      });
+
+      Tweet.hasMany( models.Like, {
+        foreignKey: 'tweetId',
+        as: 'tweets',
+      });
     }
   }
   Tweet.init({
@@ -22,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.STRING
   }, {
     sequelize,
+    timestamps: true,
     modelName: 'Tweet',
   });
   return Tweet;

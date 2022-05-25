@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/auth_service';
 
 import { AuthContext } from '../contexts/auth_context';
-import TopNavigation from './layouts/TopNavigation';
 
+import TopNavigation from './layouts/TopNavigation';
+import Modal from '../components/layouts/Modal';
 
 const LoginPage = () => {
     const { logUser } = useContext(AuthContext);
@@ -125,7 +126,7 @@ const LoginPage = () => {
                                             </div>
                                             <div className="form-group">
                                                 <button type="submit"
-                                                        className="btn btn-primary btn-block"
+                                                        className="btn btn-primary form-control"
                                                         disabled={ isLoading }>
                                                     {
                                                         isLoading ? 
@@ -144,6 +145,9 @@ const LoginPage = () => {
                     </div>
                 </section>
             </main>
+            <Modal idModal="loginMessage">
+                
+            </Modal>
         </React.Fragment>
         
     );

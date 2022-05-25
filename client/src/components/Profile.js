@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -10,6 +9,9 @@ import Modal from './layouts/Modal';
 /* services */
 import UserService from '../services/user_service';
 import AuthService from '../services/auth_service';
+
+/* utilities */
+import ModalUtility from '../utilities/modal_utility';
 
 const Profile = () => {
     const { id } = AuthService.getCurrentUser();
@@ -62,33 +64,21 @@ const Profile = () => {
     const firstName = user.firstName !== null ? user.firstName : "";
     const lastName = user.lastName !== null ? user.lastName : "";
     
-    const showModal = () => {
-        const modalRef = document.getElementById('editProfileModal');
+    const openEditProfileForm = () => {
+        const modalEditProfileForm = document.getElementById('editProfileModal');
 
-        const bsModal = new bootstrapBundle.Modal(modalRef,
-                {
-                    backdrop: "static",
-                    keyboard: false
-                }
-        );
-        
-        bsModal.show();
-            
-        
-
+        ModalUtility.showModal(modalEditProfileForm);    
     }
-
-    const hideModal = () => {
-        const modalRef = document.getElementById('editProfileModal');
-        const bsModal= bootstrapBundle.Modal.getInstance(modalRef);
-        bsModal.hide();
-
+    const closeEditProfileForm = () => {
         const { firstName, lastName } = user;
 
         if(firstName !== null) setPersonName({ ...personName, firstName });
                         
         if(lastName !== null) setPersonName({ ...personName, lastName });
         else setPersonName(initialPersonName);
+
+        const modalEditProfileForm = document.getElementById('editProfileModal');
+        ModalUtility.hideModal(modalEditProfileForm);
     }
 
     const handleInputChange = (event) => {
@@ -114,7 +104,7 @@ const Profile = () => {
                 },
                 (error) => { console.log("Error ---- ", error); }
             );
-        hideModal();
+        closeEditProfileForm();
     }
 
     return (
@@ -147,7 +137,7 @@ const Profile = () => {
                                     (
                                         <button type="button" 
                                             className="btn btn-outline-info rounded-pill float-end" 
-                                            onClick={ showModal }>Edit Profile</button>
+                                            onClick={ openEditProfileForm }>Edit Profile</button>
                                     )
                                 }
                                 
@@ -177,7 +167,7 @@ const Profile = () => {
                             <h4 className="modal-title">Edit Profile</h4>
                             <button type="button" 
                                 className="btn-close"
-                                onClick={ hideModal }></button>
+                                onClick={ closeEditProfileForm }></button>
                         </div>
 
                         <div className="modal-body">
@@ -209,7 +199,7 @@ const Profile = () => {
                         <div className="modal-footer">
                             <button type="button" 
                                 className="btn btn-danger" 
-                                onClick={ hideModal }>Close</button>
+                                onClick={ closeEditProfileForm }>Close</button>
                             <button type="submit"
                                 form="formProfileEdit"
                                 className="btn btn-primary">Update</button>
