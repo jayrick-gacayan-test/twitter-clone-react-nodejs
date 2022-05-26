@@ -1,4 +1,6 @@
 'use strict';
+const bcrypt = require('bcryptjs');
+
 const {
   Model
 } = require('sequelize');
@@ -19,14 +21,78 @@ module.exports = (sequelize, DataTypes) => {
   }
   
   User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Email is required."
+        },
+        notEmpty: {
+          msg: "Please provide an email."
+        },
+        isEmail: {
+          msg: "Invalid email format."
+        },
+        isUnique(value, next){
+          User.findOne({ 
+            attributes: { exclude: [ "cfpswd" ]},
+            where : { email : value }, })
+          .then((user) => {
+            if(user) next(new Error('Email address already in use!'));
+
+            next();
+          });
+        }
+      },
+    },
+    password: { 
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty:{
+          msg: "Please provide a password."
+        },
+        len: {
+          args: [8],
+          msg: "Password must have at least 8 characters."
+        },
+        notNull:{ 
+          msg: "Password is required."
+        }
+        
+        
+      }
+    },
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
+    cfpswd: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull:{
+          msg: "Confirm password is required."
+        },
+        notEmpty: {
+          msg: "Confirm password must not be empty"
+        },
+        passwordMatch(value){
+          if(value !== this.password)
+            throw new Error("Password and confirm password must match.")
+        }
+      }
+    }
   },{
+    hooks: {
+      beforeCreate: (User) => {
+        User.password = bcrypt.hashSync(User.password, 10);
+      }
+    },
     sequelize,
     timestamps: true,
     modelName: 'User',
   });
+
   return User;
 };
+

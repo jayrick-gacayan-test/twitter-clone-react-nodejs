@@ -5,7 +5,7 @@ const checkForDuplicateEmail = (req, res, next) => {
     User.findOne({ where: { email: req.body.email } })
         .then(
             (user) => {
-                if(user) return res.status(400).send({ error: "Username already taken."});
+                if(user) return res.status(400).send({ error: "Email already taken."});
 
                 next();
             }

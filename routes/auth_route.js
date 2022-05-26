@@ -10,8 +10,7 @@ module.exports = app => {
     next();
   } );
   // Routes //
-  app.post( "/api/user/register", 
-            [ verifyEmail.checkForDuplicateEmail ], 
+  app.post( "/api/user/register",  
             authController.register);
   app.post( "/api/user/login", authController.logIn );
 };

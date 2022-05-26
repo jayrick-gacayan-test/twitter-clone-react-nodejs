@@ -8,18 +8,40 @@ const config = require('../config/config');
 const User = database.User;
 
 exports.register = (req, res) => {
-    const { email, password } = req.body;
-
+    const { email, password, cfpswd } = req.body;
+    
     return User.create({
         email,
-        password: bcrypt.hashSync(password, 10)
+        password,
+        cfpswd
     })
     .then(
         (newUser) => {
             const user = { newUser, message: "User registered successfully." };
             return res.status(201).send(user);
         }
-    ).catch(error => res.status(500).send(error));
+    )
+    .catch(
+        (error) => { 
+            if(error.name === 'SequelizeValidationError'){
+                const errObj = {};
+                error.errors.map((error) => {
+                    
+                    if(error.path in errObj)
+                    {
+                        errObj[error.path] = [...errObj[error.path], error.message ];
+                    }
+                    else{
+                        errObj[error.path] = [ error.message ];
+                    }
+                });
+
+               return res.status(400).send({ error: errObj});
+            }
+            return res.status(500).send(error);
+        
+        }
+    );
 };
 
 exports.logIn = (req, res) => {

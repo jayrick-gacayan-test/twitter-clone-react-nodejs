@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 
+/* services */
 import AuthService from '../services/auth_service';
 
-/* components */
-import TopNavigation from './layouts/TopNavigation';
+import RegisterBackground from '../assets/img_register_background.jpeg';
 
-import RegisterBackground from '../assets/img_register_background.jpeg'
 const RegisterPage = () => {
     const initialUser = {
         email: "",
@@ -33,33 +32,33 @@ const RegisterPage = () => {
         const { email, password, cfpswd } = user;
         
         setTimeout(()=> {
-            if(!email.trim() || !password.trim() || !cfpswd.trim()) 
-            {
-                setMessage("Inputs are required.");
-                setSuccessful(false);
-                setIsLoading(false);
-                alert("Inputs are required.")
-                return;
-            }
-
-            AuthService.register(email, password)
+            
+            AuthService.register(
+                email.trim(),
+                password.trim(),
+                cfpswd.trim()
+            )
             .then(
                 (response) => {
                     setMessage(response.data.message);
                     setSuccessful(true);
                 },
                 (error) => {
-                    console.log("Error ---- ",error);
+                    console.log("Error ---- ", error);
                     const resMessage =
                         (error.response &&
                         error.response.data &&
                         error.response.data.error) ||
                         error.message ||
                         error.toString() || error;
+                    
+                    if(resMessage.cfpswd){
+                        setMessage(resMessage.cfpswd[0]);
+                    }else{
                     setMessage(resMessage);
+                    }
                     setSuccessful(false);
                     setIsLoading(false);
-                    alert(resMessage);
                 }
             );
         }, 2000);
@@ -125,7 +124,7 @@ const RegisterPage = () => {
                     }
                     {
                         !successful && (
-                            <form onSubmit={
+                            <form id="registerForm" onSubmit={
                                 handleRegisterSubmit
                             }>
                                 <div className="form-floating mb-3 mt-3">
@@ -167,7 +166,8 @@ const RegisterPage = () => {
                     <div className="form-group mb-3 mt-3" >
                         <button type="submit" 
                                 className="btn btn-info p-3 form-control text-white rounded-pill" 
-                                disabled={ isLoading }>
+                                disabled={ isLoading }
+                                form="registerForm">
                             {
                                 isLoading ? 
                                 (<React.Fragment>
