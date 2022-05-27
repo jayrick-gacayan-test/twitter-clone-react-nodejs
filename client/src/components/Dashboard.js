@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -10,12 +9,8 @@ import TweetList from './Tweet/TweetList';
 import AuthService from '../services/auth_service';
 import TweetService from '../services/tweet_service';
 
-/* Dummy Image */
-import DummyImage from './layouts/DummyImage';
-
-
 const Dashboard = () => {
-    const { id } = AuthService.getCurrentUser();
+    const { id, email, firstName, lastName } = AuthService.getCurrentUser();
     
     const initialTweet = {
             userId: id,
@@ -25,10 +20,19 @@ const Dashboard = () => {
     
     const [tweet, setTweet] = useState(initialTweet);
     const [allTweet, setAllTweet] = useState([]);
+    const user = {
+        User : {
+            email, 
+            firstName, 
+            lastName
+        }
+    };
 
     useEffect(
         () => {
             fetchUserTweets(id);
+
+            
         }, []
     );
     
@@ -50,7 +54,8 @@ const Dashboard = () => {
         TweetService.createTweet(userId, title, content)
             .then(
                 (response) => {
-                    console.log("Response --- ", response);
+                    const tweetData = { ...response.data, ...user };
+                    setAllTweet([...allTweet, tweetData]);
                     setTweet(initialTweet);
                 },
                 (error) => {
@@ -64,6 +69,7 @@ const Dashboard = () => {
         TweetService.getUserTweets(id)
             .then(
                 (response) => {
+                    console.log("Tweet --- ", response.data);
                     setAllTweet(response.data);
                 },
                 (error) => {
@@ -71,6 +77,23 @@ const Dashboard = () => {
                     
                 }
             );
+    }
+
+    
+    const handleLikeTweet = (element) => {
+        console.log("This ---- ", element);
+        
+        const checkClassName = element.target.classList.contains("bi-heart-fill");
+
+        if(checkClassName)
+        {
+            element.target.classList.remove("text-danger", "bi-heart-fill");
+            element.target.classList.add("bi-heart");
+        }
+        else{
+            element.target.classList.remove("bi-heart");
+            element.target.classList.add("text-danger", "bi-heart-fill");
+        }
     }
 
     return (
@@ -116,7 +139,8 @@ const Dashboard = () => {
                     </div>
                     <hr />
                     <div className="container-fluid g-0">
-                        <TweetList tweets={ allTweet } />
+                        <TweetList tweets={ allTweet }
+                            handleLikeTweet={ handleLikeTweet } />
                     </div>
                 </main>
                 <RightSideContent />

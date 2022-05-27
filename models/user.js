@@ -35,9 +35,7 @@ module.exports = (sequelize, DataTypes) => {
           msg: "Invalid email format."
         },
         isUnique(value, next){
-          User.findOne({ 
-            attributes: { exclude: [ "cfpswd" ]},
-            where : { email : value }, })
+          User.findOne({ where : { email : value } })
           .then((user) => {
             if(user) next(new Error('Email address already in use!'));
 
@@ -67,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     cfpswd: {
-      type: DataTypes.STRING,
+      type: DataTypes.VIRTUAL,
       allowNull: false,
       validate: {
         notNull:{
@@ -83,16 +81,22 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   },{
+    
     hooks: {
       beforeCreate: (User) => {
         User.password = bcrypt.hashSync(User.password, 10);
-      }
+      },
+      
     },
+    
     sequelize,
     timestamps: true,
     modelName: 'User',
   });
 
+  User.validPassword = (password) => {
+    return password = this.password;
+  }
   return User;
 };
 

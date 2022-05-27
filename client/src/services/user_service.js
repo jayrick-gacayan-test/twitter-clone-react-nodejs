@@ -18,9 +18,14 @@ const updateProfile = (userId, firstName, lastName) => {
     )
 };
 
+const getAllUsers = () => {
+    return axios.get(API_URL);
+};
+
 const UserService = {
     getUser,
-    updateProfile
+    updateProfile,
+    getAllUsers
 }
 
 export default UserService;

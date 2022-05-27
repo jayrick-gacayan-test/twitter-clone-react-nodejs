@@ -13,6 +13,19 @@ exports.show = (req, res) => {
         .catch(error => res.status(400).send(error));
 }
 
+exports.showAll = (req, res) => {
+    
+    return User.findAll()
+        .then(
+            (users) => {
+                if(!users) return res.status(404).send({ error: "You do not have any tweets." });
+
+                return res.status(200).send(users);
+            }
+        )
+        .catch(error => res.status(400).send(error));
+}
+
 exports.update = async(req, res) => {
     const id = req.params.userId;
     

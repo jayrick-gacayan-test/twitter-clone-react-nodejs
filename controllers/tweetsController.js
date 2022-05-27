@@ -26,7 +26,7 @@ exports.showAll = (req, res) => {
     return Tweet.findAll({
                     include: {
                         model: User,
-                        attributes: [ "email" ],
+                        attributes: [ "email", "firstName", "lastName"],
                         where: {
                             id: userId
                         }

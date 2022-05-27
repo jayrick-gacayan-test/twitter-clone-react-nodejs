@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-const database = require('../models');
 const config = require('../config/config');
+const database = require('../models');
+
 
 /* models */
 const User = database.User;
@@ -28,18 +29,14 @@ exports.register = (req, res) => {
                 error.errors.map((error) => {
                     
                     if(error.path in errObj)
-                    {
                         errObj[error.path] = [...errObj[error.path], error.message ];
-                    }
-                    else{
+                    else
                         errObj[error.path] = [ error.message ];
-                    }
                 });
 
                return res.status(400).send({ error: errObj});
             }
             return res.status(500).send(error);
-        
         }
     );
 };
@@ -47,8 +44,11 @@ exports.register = (req, res) => {
 exports.logIn = (req, res) => {
     const { email, password } = req.body;
 
-    console.log("Email, Password --- ", email, password);
     const logInError = { accessToken : null, error: "Invalid username or password." };
+    
+    const userBuild = User.build({ email, password });
+
+    console.log(" --- ", userBuild.getPassword("1"));
 
     return User.findOne({ where: { email: email }})
         .then(
@@ -66,15 +66,33 @@ exports.logIn = (req, res) => {
                                     config.jwt_auth.secret,
                                     { expiresIn : config.jwt_auth.jwtExpiration });
                 
-                const { id, email } = user;
+                const { id, email, firstName, lastName } = user;
 
                 return res.status(200).send({
                     id, 
-                    email, 
+                    email,
+                    firstName,
+                    lastName,
                     accessToken: token,
                     message : "User successfully login."
                 });
             }
         )
-        .catch(error => res.status(500).send(error));
+        .catch(
+            (error) => { 
+                if(error.name === 'SequelizeValidationError'){
+                    const errObj = {};
+                    error.errors.map((error) => {
+                        
+                        if(error.path in errObj)
+                            errObj[error.path] = [...errObj[error.path], error.message ];
+                        else
+                            errObj[error.path] = [ error.message ];
+                    });
+    
+                   return res.status(400).send({ error: errObj});
+                }
+                return res.status(500).send(error);
+            }
+        );
 }

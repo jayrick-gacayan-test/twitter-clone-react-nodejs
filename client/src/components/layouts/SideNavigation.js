@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 
 const SideNavigation = ({ userId }) => {
+    
     return (
         <nav className="navbar navbar-light bg-light bg-white">
             <div className="container-fluid">
@@ -22,26 +24,18 @@ const SideNavigation = ({ userId }) => {
                             </svg>
                         </a>
                     </li>
+                    <SideNavigationMenuLink 
+                        activeOnlyWhenExact={ true }
+                        to="/dashboard"
+                        label="Home"
+                    />
+                    <SideNavigationMenuLink 
+                        activeOnlyWhenExact={ true }
+                        to={ `/profile/${ userId }` }
+                        label="Profile"
+                    />
                     <li className="nav-item">
-                        <a className="nav-link fs-2" 
-                            href="/dashboard">
-                            <h6>
-                                <i className="bi bi-house-door-fill me-3"></i>
-                                Home
-                            </h6>
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link fs-2" 
-                            href={ `/profile/${ userId }` }>
-                            <h6>
-                                <i className="bi bi-person-fill me-3"></i>
-                                Profile
-                            </h6>
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link fs-2 active" 
+                        <a className="nav-link fs-2 " 
                             href={ void(0) }>
                             <h6>
                                 <i className="bi bi-card-text me-3"></i>
@@ -52,6 +46,30 @@ const SideNavigation = ({ userId }) => {
                 </ul>
             </div>
         </nav>
+    );
+}
+
+function SideNavigationMenuLink({ label, to, activeOnlyWhenExact}){
+    let resolved = useResolvedPath(to);
+    let match = useMatch(
+        {
+            path: resolved.pathname,
+            end: activeOnlyWhenExact
+        }
+    );
+
+    console.log();
+
+    return (
+        <li className="nav-item">
+            <Link className={ `nav-link fs-2 ${ match ? ' active': '' }` }
+                to={ to }>
+                <h6>
+                    <i className="bi bi-house-door-fill me-3"></i>
+                    { label }
+                </h6>
+            </Link>
+        </li>
     );
 }
 

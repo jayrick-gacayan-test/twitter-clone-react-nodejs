@@ -1,7 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import UserService from "../../services/user_service";
 
-import DummyImage from "./DummyImage";
+import FollowerList from "../Follower/FollowerList";
+
+
 const RightSideContent = () => {
+
+    const [users, setUsers] = useState([]);
+    
+    useEffect(
+        () =>
+        {
+            fetchAllUsers();
+        }
+        ,[]
+    );
+
+    const fetchAllUsers = () => {
+        UserService.getAllUsers()
+            .then(
+                (response) => {
+                    console.log("Users --- ", response.data);
+                    setUsers(response.data);
+                },
+                (error) => {
+                    console.log("Error ---- ",error);
+                    
+                }
+            );
+    }
+
+
     return (
         <aside className='col-3 py-3 d-none d-lg-block'>
             <div className="input-group mb-3">
@@ -30,30 +59,7 @@ const RightSideContent = () => {
                 </div>
                 <div className="card-body">
                     <ul className="list-group list-group-flush d-flex">
-                        <li className="list-group-item d-flex bg-light">
-                            <div className="me-2">
-                                <DummyImage 
-                                    className="bg-light text-dark"
-                                    style={{
-                                        width: "60px",
-                                        height: "60px",
-                                        maxWidth: "60px",
-                                        maxHeight: "60px",
-                                    }}
-                                />
-                            </div>
-                            <div className="flex-grow-1 bg-light d-flex flex-xxl">
-                                <div className="">
-                                    <p className="font-weight-bold">Name
-                                        <a className="text-secondary d-block text-decoration-none" 
-                                            href="#">Link username</a>
-                                    </p>
-                                </div>
-                                <div className="ms-xxl-auto">
-                                    <button className="btn btn-outline-info">Follow</button>
-                                </div>
-                            </div>
-                        </li>
+                        <FollowerList users={ users }/>
                     </ul>
                 </div>
             </div>

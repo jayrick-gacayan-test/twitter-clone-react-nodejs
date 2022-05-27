@@ -23,7 +23,6 @@ function App(){
     return(
         <React.Fragment>
             <AuthProvider>
-                
                 <Routes>
                     <Route exact path="/" 
                         element={ <HomePage /> }/>
