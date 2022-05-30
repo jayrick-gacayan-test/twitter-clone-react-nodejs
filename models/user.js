@@ -18,12 +18,23 @@ module.exports = (sequelize, DataTypes) => {
         as: 'users',
       } );
     }
+
+    async hasEmail(){
+      const user = await User.findOne({ where : { email : this.email }});
+      if(user)
+        return "Email has been already taken.";
+      
+      return null;
+    }// checks existing email address...
   }
   
   User.init({
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: {
+        msg: "Email has been already taken."
+      },
       validate: {
         notNull: {
           msg: "Email is required."
@@ -33,14 +44,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         isEmail: {
           msg: "Invalid email format."
-        },
-        isUnique(value, next){
-          User.findOne({ where : { email : value } })
-          .then((user) => {
-            if(user) next(new Error('Email address already in use!'));
-
-            next();
-          });
         }
       },
     },
@@ -58,8 +61,6 @@ module.exports = (sequelize, DataTypes) => {
         notNull:{ 
           msg: "Password is required."
         }
-        
-        
       }
     },
     firstName: DataTypes.STRING,
@@ -83,20 +84,28 @@ module.exports = (sequelize, DataTypes) => {
   },{
     
     hooks: {
-      beforeCreate: (User) => {
-        User.password = bcrypt.hashSync(User.password, 10);
+      beforeSave: (User, options) => {
+        if(options.fields.includes("cfpswd"))
+          User.password = bcrypt.hashSync(User.password, 10);
       },
-      
+      beforeFind : (options) => {
+        console.log("Option attributes ---- ",options);
+      },
+      beforeValidate:(User, options) => {
+        
+      },
+      afterValidate: (User, options) => 
+      {
+        
+      }
     },
     
     sequelize,
+    tableName: "users",
     timestamps: true,
     modelName: 'User',
   });
 
-  User.validPassword = (password) => {
-    return password = this.password;
-  }
   return User;
 };
 

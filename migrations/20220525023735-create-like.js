@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Likes', {
+    await queryInterface.createTable('likes', {
       isLiked: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
@@ -10,7 +10,7 @@ module.exports = {
       tweetId: {
         type: Sequelize.INTEGER,
         references: {
-           model: "Tweets",
+           model: "tweets",
            key: "id",
            as: "tweetId"
         }
@@ -18,7 +18,7 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
         references: {
-           model: "Users",
+           model: "users",
            key: "id",
            as: "userId"
         }
@@ -29,6 +29,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Likes');
+    await queryInterface.dropTable('likes');
   }
 };

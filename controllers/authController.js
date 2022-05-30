@@ -8,57 +8,89 @@ const database = require('../models');
 /* models */
 const User = database.User;
 
-exports.register = (req, res) => {
-    const { email, password, cfpswd } = req.body;
-    
-    return User.create({
-        email,
-        password,
-        cfpswd
-    })
-    .then(
-        (newUser) => {
-            const user = { newUser, message: "User registered successfully." };
-            return res.status(201).send(user);
-        }
-    )
-    .catch(
-        (error) => { 
-            if(error.name === 'SequelizeValidationError'){
-                const errObj = {};
-                error.errors.map((error) => {
-                    
-                    if(error.path in errObj)
-                        errObj[error.path] = [...errObj[error.path], error.message ];
-                    else
-                        errObj[error.path] = [ error.message ];
-                });
+const errorBreakdown = (errors) => {
+    const errObj = {};
 
-               return res.status(400).send({ error: errObj});
-            }
-            return res.status(500).send(error);
+    errors.map((error) => {
+                        
+        if(error.path in errObj)
+            errObj[error.path] = [...errObj[error.path], error.message ];
+        else
+            errObj[error.path] = [ error.message ];
+    });
+
+    return errObj;
+}
+
+exports.register = async (req, res) => {
+    const { email, password, cfpswd } = req.body;
+
+    let user = null;
+    let hasEmail = null;
+    try{
+        user = await User.build({ email, password, cfpswd });
+        
+        // checks if email exists.
+        hasEmail = await user.hasEmail();
+        let validateUser = await user.validate(
+                            { 
+                                fields: ["email", "password", "cfpswd"]
+                            });//validating fields
+    
+    }catch(err){
+        let errObj = {};
+
+        if(err.name === 'SequelizeValidationError')
+            errObj = errorBreakdown(err.errors);
+
+        if(hasEmail !== null){
+            
+            errObj["email"] = [ hasEmail ];
+            return res.status(400).json({ error: errObj });
         }
-    );
+        return res.status(500).json(err);
+    }
+    
+    if(hasEmail !== null)
+        return res.status(401).json({ error: { email: "Email has been already taken."}});
+    
+    // inserting data
+    await user.save();
+    return res.status(200).json({ email: user.email, message: "User successfully register." });    
 };
 
-exports.logIn = (req, res) => {
+exports.logIn = async (req, res) => {
     const { email, password } = req.body;
 
+    let user = null;
     const logInError = { accessToken : null, error: "Invalid username or password." };
     
-    const userBuild = User.build({ email, password });
+    try{
+        user = await User.build({ email, password });
+        let validateUser = await user.validate(
+                                { 
+                                    fields: ["email", "password"], 
+                                    skip: ["cfpswd"]
+                                }); // validating fields
+    }
+    catch(err){
+        let errObj = {};
 
-    console.log(" --- ", userBuild.getPassword("1"));
+        if(err.name === 'SequelizeValidationError'){
+            errObj = errorBreakdown(err.errors);
+            return res.status(400).json({error: errObj});
+        }
 
-    return User.findOne({ where: { email: email }})
+        return res.status(500).json(err);
+    }
+    
+    return await User.findOne({ where: { email: email }})
         .then(
             (user) => {
-                console.log("User --- ", user);
-                const validPassword = bcrypt.compareSync(password, user.password);
-
                 if(!user) 
                     return res.status(401).send({ ...logInError, error: "User may be deleted or maybe not exists"});
                 
+                const validPassword = bcrypt.compareSync(password, user.password);
                 if(!validPassword)
                     return res.status(401).send(logInError);
                 
@@ -76,23 +108,6 @@ exports.logIn = (req, res) => {
                     accessToken: token,
                     message : "User successfully login."
                 });
-            }
-        )
-        .catch(
-            (error) => { 
-                if(error.name === 'SequelizeValidationError'){
-                    const errObj = {};
-                    error.errors.map((error) => {
-                        
-                        if(error.path in errObj)
-                            errObj[error.path] = [...errObj[error.path], error.message ];
-                        else
-                            errObj[error.path] = [ error.message ];
-                    });
-    
-                   return res.status(400).send({ error: errObj});
-                }
-                return res.status(500).send(error);
             }
         );
 }
