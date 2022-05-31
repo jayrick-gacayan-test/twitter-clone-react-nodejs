@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
 const config = require('../config/config');
 const database = require('../models');
-
 
 /* models */
 const User = database.User;
@@ -37,16 +35,19 @@ exports.register = async (req, res) => {
                                 fields: ["email", "password", "cfpswd"]
                             });//validating fields
     
+        
+    
     }catch(err){
         let errObj = {};
 
         if(err.name === 'SequelizeValidationError')
             errObj = errorBreakdown(err.errors);
 
-        if(hasEmail !== null){
-            
-            errObj["email"] = [ hasEmail ];
-            return res.status(400).json({ error: errObj });
+        if(hasEmail !== null) errObj["email"] = [ hasEmail ];
+        
+        for(let props in errObj){
+            if(errObj.hasOwnProperty(props))
+                return res.status(400).json({ error: errObj });
         }
         return res.status(500).json(err);
     }
@@ -56,7 +57,7 @@ exports.register = async (req, res) => {
     
     // inserting data
     await user.save();
-    return res.status(200).json({ email: user.email, message: "User successfully register." });    
+    return res.status(200).json({ email: user.email, message: "Your account has been registered successfully." });    
 };
 
 exports.logIn = async (req, res) => {
@@ -106,7 +107,7 @@ exports.logIn = async (req, res) => {
                     firstName,
                     lastName,
                     accessToken: token,
-                    message : "User successfully login."
+                    message : "Your account login successfully."
                 });
             }
         );

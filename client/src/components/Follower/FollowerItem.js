@@ -6,7 +6,7 @@ const FollowerItem = (props) => {
     const { user } = props;
     return (
         <li className="list-group-item d-flex bg-light">
-            <div className="me-2">
+            <div className="me-2 flex-shrink-1">
                 <DummyImage 
                     className="bg-light text-dark"
                     style={{
@@ -17,14 +17,14 @@ const FollowerItem = (props) => {
                     }}
                 />
             </div>
-            <div className="flex-grow-1 bg-light d-flex flex-xxl">
-                <div className="">
+            <div className="flex-grow-1 bg-light d-flex flex-column flex-xxl-row justify-content-between">
+                <div className="d-flex flex-wrap">
                     <p className="font-weight-bold">{ user.firstName } { user.lastName } 
-                        <a className="text-secondary d-block text-decoration-none" 
+                        <a className="text-secondary d-block text-decoration-none text-wrap" 
                             href={`/profile/${ user.id }`}>@{ user.email }</a>
                     </p>
                 </div>
-                <div className="ms-xxl-auto">
+                <div className="d-flex">
                     <button className="btn btn-outline-info">Follow</button>
                 </div>
             </div>

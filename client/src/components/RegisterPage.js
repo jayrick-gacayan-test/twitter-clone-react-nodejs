@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import RegisterBackground from '../assets/img_register_background.jpeg';
+
+/* Components */
+import Modal from './layouts/Modal';
 
 /* services */
 import AuthService from '../services/auth_service';
 
-import RegisterBackground from '../assets/img_register_background.jpeg';
+/* utility */
+import ModalUtility from '../utilities/modal_utility';
+
+import './layouts/success.modal.css';
 
 const RegisterPage = () => {
+    let navigate = useNavigate();
     const initialUser = {
         email: "",
         password: "",
@@ -15,14 +25,24 @@ const RegisterPage = () => {
     const [user, setUser] = useState(initialUser);
     const [successful, setSuccessful] = useState(false);
     const [message, setMessage] = useState("");
+    
     const [isLoading, setIsLoading] = useState(false);
-    
     const [errors, setErrors] = useState({});
-    const [hasError, setHasError] = useState(false);
-    
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const openModalSuccess = () => {
+        const modalSuccess = document.getElementById('successModal');
+        ModalUtility.showModal(modalSuccess);
+    }
+
+    const closeModalSuccess = () => {
+        const modalSuccess = document.getElementById('successModal');
+        ModalUtility.hideModal(modalSuccess);
+        navigate('/login');
+    }
+
     const handleInputChange = (event) => {
-        setHasError(false);
-        setErrors({});
+        
         const { name, value } = event.target;
         setUser({ ...user, [name] : value });
     };
@@ -30,6 +50,7 @@ const RegisterPage = () => {
     const handleRegisterSubmit = (event) => {
         event.preventDefault();
         
+        setIsSubmitted(false);
         setIsLoading(true);
         
         const { email, password, cfpswd } = user;
@@ -45,9 +66,10 @@ const RegisterPage = () => {
                 (response) => {
                     setMessage(response.data.message);
                     setSuccessful(true);
+
+                    openModalSuccess();
                 },
                 (error) => {
-                    console.log("Error ---- ", error);
                     const resMessage =
                         (error.response &&
                         error.response.data &&
@@ -55,16 +77,11 @@ const RegisterPage = () => {
                         error.message ||
                         error.toString() || error;
                     
-                    if(resMessage.cfpswd){
-                        setErrors(resMessage);
-                        setHasError(true);
-                    }else{
-                        setErrors({});
-                        setHasError(false);
-                    }
+                    setErrors(resMessage ? resMessage: {});
 
                     setSuccessful(false);
                     setIsLoading(false);
+                    setIsSubmitted(true);
                 }
             );
 
@@ -73,29 +90,29 @@ const RegisterPage = () => {
     };
     
     return (
-        <div className="d-flex w-100 justify-content-center align-items-center"
+        <div className="d-flex w-100 justify-content-center align-items-center flex-wrap"
             style={{
-                backgroundImage: `url(${ RegisterBackground})`,
+                backgroundImage: `url(${ RegisterBackground })`,
                 backgroundSize: "cover",
                 backgroundAttachment: "fixed",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 height: "100vh"
             }}>
-            <div className="card d-flex justify-content-center"
+            <div className="card d-flex justify-content-center p-2"
                 style={{
                     width: "700px",
                     maxWidth: "80vh",
                     minWidth: "400px",
 
-                    height: "650px",
+                    height: "772px",
                     maxHeight: "90vh",
                     minHeight: "400px",
 
                     borderRadius: "50px"
 
                 }}>
-                <div className="card-body d-flex justify-content-between">
+                <div className="card-body px-5 d-flex justify-content-between">
                     <div>
                         <a href="/"
                             className="text-decoration-none text-dark">
@@ -132,28 +149,17 @@ const RegisterPage = () => {
                     <div>&nbsp;</div>
                     
                 </div>
-                <div className="card-body px-5">
+                <div className="card-body px-5 d-flex flex-wrap flex-column">
                     <div className="py-3">
                         <span className="fs-2 fw-bold">Create your account</span>
                     </div>
                     {
-                        message && (
-                            <div className="container-fluid mb-3">
-                                <div
-                                    className={ `alert alert-${ successful ? "success":"danger" }` }
-                                    role="alert">
-                                    { message }
-                                </div>
-                            </div>
-                        )
-                    }
-                    {
                         !successful && (
                             <form id="registerForm" 
                                 onSubmit={ handleRegisterSubmit }>
-                                <div className="form-floating mb-3 mt-3">
-                                    <input type="email" 
-                                        className={ `form-control px-4 rounded-pill is-${ hasError ? `in` : `` }valid` } 
+                                <div className="form-floating mb-2 mt-2">
+                                    <input type="text" 
+                                        className={ `form-control px-3 rounded-pill ${ isSubmitted && `is-${ errors.email ? `in` : `` }valid` }` } 
                                         id="email" 
                                         placeholder="Enter email" 
                                         name="email"
@@ -165,9 +171,9 @@ const RegisterPage = () => {
                                         <div className="invalid-feedback">{ errors.email[0] }</div>
                                     }
                                 </div>
-                                <div className="form-floating mb-3 mt-3">
+                                <div className="form-floating mb-2 mt-2">
                                     <input type="password" 
-                                        className={ `form-control px-4 rounded-pill is-${ hasError ? `in` : `` }valid` }
+                                        className={ `form-control px-3 rounded-pill ${ isSubmitted && `is-${ errors.password ? `in` : `` }valid` }` }
                                         id="password" 
                                         placeholder="Enter email" 
                                         name="password"
@@ -179,9 +185,9 @@ const RegisterPage = () => {
                                         <div className="invalid-feedback">{ errors.password[0] }</div>
                                     }
                                 </div>
-                                <div className="form-floating mb-3 mt-3">
+                                <div className="form-floating mb-2 mt-2">
                                     <input type="password" 
-                                        className={ `form-control px-4 rounded-pill is-${ hasError ? `in` : `` }valid` }
+                                        className={ `form-control px-3 rounded-pill ${ isSubmitted && `is-${ errors.cfpswd ? `in` : `` }valid` }` }
                                         id="cfpswd" 
                                         placeholder="Confirm Password" 
                                         name="cfpswd"
@@ -224,6 +230,33 @@ const RegisterPage = () => {
                     </div>
                 </div>
             </div>
+
+            {   
+                <Modal idModal="successModal"
+                    ariaLabel="Register Success">
+                        {
+                            successful && 
+                            (
+                                <div className="modal-confirm">
+                                    <div className="modal-header justify-content-center">
+                                        <div className="icon-box d-flex justify-content-center">
+                                            <i className="bi bi-check-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div className="modal-body text-center">
+                                        <h4>Great!</h4>	
+                                        <p>{ message }</p>
+                                        <button className="btn rounded-pill btn-warning text-white"
+                                        onClick={ closeModalSuccess }>
+                                            <span className="me-2">Start Login </span> 
+                                            <i className="bi bi-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        }
+                </Modal>
+            }
         </div>
     );
 }

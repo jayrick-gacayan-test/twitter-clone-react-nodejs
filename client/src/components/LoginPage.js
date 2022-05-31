@@ -6,6 +6,10 @@ import AuthService from '../services/auth_service';
 /* components */
 import Modal from '../components/layouts/Modal';
 
+/* utility */
+import ModalUtility from '../utilities/modal_utility';
+import { isObject } from '../utilities/datatype_utility';
+
 import RegisterBackground from '../assets/img_register_background.jpeg';
 const LoginPage = () => {
     let navigate = useNavigate();
@@ -18,10 +22,21 @@ const LoginPage = () => {
     const [user, setUser] = useState(initialUser);
     const [message, setMessage] = useState("");
     const [successful, setSuccessful] = useState(false);
-    const [isLoading, setIsLoading] = useState(false)
-
+    
+    const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
-    const [hasError, setHasError] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const openModalSuccess = () => {
+        const modalSuccess = document.getElementById('successModal');
+        ModalUtility.showModal(modalSuccess);
+    }
+
+    const closeModalSuccess = () => {
+        const modalSuccess = document.getElementById('successModal');
+        ModalUtility.hideModal(modalSuccess);
+        navigate('/dashboard');
+    }
 
     const handleInputChange = (event) => {
         const { name, value } = event.target
@@ -32,10 +47,8 @@ const LoginPage = () => {
         event.preventDefault();
         const { email, password } = user;
         
+        setIsSubmitted(false);
         setIsLoading(true);
-
-        setErrors({});
-        setHasError(false);
 
         setTimeout(() => {
             
@@ -43,17 +56,13 @@ const LoginPage = () => {
             AuthService.login(email.trim(), password.trim())
             .then(
                 (response) => {
-                    console.log("response ==== ", response);
                     
                     setMessage(response.message);
                     setSuccessful(true);
-                    setTimeout(() => {
-                        navigate('/dashboard');
-                        window.location.reload();
-                    }, 5000);
+                    
+                    openModalSuccess();
                 },
                 (error) => {
-                    console.log("Error ---- ", error);
                     const resMessage =
                         (error.response &&
                         error.response.data &&
@@ -61,16 +70,13 @@ const LoginPage = () => {
                         error.message ||
                         error.toString() || error;
                     
-                    if(resMessage.password){
-                        setErrors(resMessage);
-                        setHasError(true);
-                    }else{
-                        setErrors({});
-                        setHasError(false);
-                    }
-
+                    setErrors(resMessage ? resMessage: {});
+                    console.log("Is object --- ", isObject(resMessage));
+                    
+                    setMessage(!isObject(resMessage) ? resMessage: "")
                     setSuccessful(false);
                     setIsLoading(false);
+                    setIsSubmitted(true);
                 }
             );
         },2000);
@@ -79,7 +85,7 @@ const LoginPage = () => {
     return (
         <div className="d-flex w-100 justify-content-center align-items-center"
             style={{
-                backgroundImage: `url(${ RegisterBackground})`,
+                backgroundImage: `url(${ RegisterBackground })`,
                 backgroundSize: "cover",
                 backgroundAttachment: "fixed",
                 backgroundPosition: "center",
@@ -141,13 +147,11 @@ const LoginPage = () => {
                         <span className="fs-2 fw-bold">Login your account</span>
                     </div>
                     {
-                        message && (
-                            <div className="container-fluid mb-3">
-                                <div
-                                    className={ `alert alert-${ successful ? "success":"danger" }` }
-                                    role="alert">
-                                    { message }
-                                </div>
+                        message && !successful && 
+                        (
+                            <div className="py-3 alert alert-danger text-center rounded-3" 
+                                role="alert">
+                                <span className="fs-5">{ message }</span>
                             </div>
                         )
                     }
@@ -156,8 +160,8 @@ const LoginPage = () => {
                             <form id="loginForm" 
                                 onSubmit={ handleLoginSubmit }>
                                 <div className="form-floating mb-3 mt-3">
-                                    <input type="email" 
-                                        className={ `form-control px-4 rounded-pill is-${ hasError ? `in` : `` }valid` } 
+                                    <input type="text" 
+                                        className={ `form-control px-4 rounded-pill ${ isSubmitted && `is-${ errors.email ? `in` : `` }valid` }` } 
                                         id="email" 
                                         placeholder="Enter email" 
                                         name="email"
@@ -171,9 +175,9 @@ const LoginPage = () => {
                                 </div>
                                 <div className="form-floating mb-3 mt-3">
                                     <input type="password" 
-                                        className={ `form-control px-4 rounded-pill is-${ hasError ? `in` : `` }valid` }
+                                        className={ `form-control px-4 rounded-pill ${ isSubmitted && `is-${ errors.password ? `in` : `` }valid` }` }
                                         id="password" 
-                                        placeholder="Enter email" 
+                                        placeholder="Enter password" 
                                         name="password"
                                         value={ user.password }
                                         onChange={ handleInputChange } />
@@ -183,7 +187,6 @@ const LoginPage = () => {
                                         <div className="invalid-feedback">{ errors.password[0] }</div>
                                     }
                                 </div>
-                                
                             </form>
                         )
                     }
@@ -214,6 +217,33 @@ const LoginPage = () => {
                     </div>
                 </div>
             </div>
+
+            {   
+                <Modal idModal="successModal"
+                    ariaLabel="Register Success">
+                        {
+                            successful && 
+                            (
+                                <div className="modal-confirm">
+                                    <div className="modal-header justify-content-center">
+                                        <div className="icon-box d-flex justify-content-center">
+                                            <i className="bi bi-check-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div className="modal-body text-center">
+                                        <h4>Great!</h4>	
+                                        <p>{ message }</p>
+                                        <button className="btn rounded-pill btn-warning text-white"
+                                        onClick={ closeModalSuccess }>
+                                            <span className="me-2">Start Exploring</span> 
+                                            <i className="bi bi-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        }
+                </Modal>
+            }
         </div>
     );
 };

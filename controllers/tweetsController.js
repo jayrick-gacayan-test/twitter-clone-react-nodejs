@@ -39,7 +39,7 @@ exports.showAll = (req, res) => {
                     return res.status(200).send(tweets);
                 }
             )
-            .catch((error) => res.status(400).send(error));
+            .catch((error) => res.status(403).send(error));
 }
 
 

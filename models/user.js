@@ -75,6 +75,10 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: {
           msg: "Confirm password must not be empty"
         },
+        len: {
+          args: [8],
+          msg: "Confirm password must have at least 8 characters and matches to the password."
+        },
         passwordMatch(value){
           if(value !== this.password)
             throw new Error("Password and confirm password must match.")

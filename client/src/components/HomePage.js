@@ -9,13 +9,16 @@ const HomePage = () => {
             style={{
                 height: "100vh"
             }}>
-            <div className="flex-column d-flex align-items-stretch"
+            <div className="d-flex flex-column"
                 style={{
-                    width: "100%",
+                    width: "inherit",
                     minHeight: "898px",
-                    height: "95vh"
+                    maxHeight: "95vh",
                 }}>
-                <div className="d-flex flex-lg-row-reverse flex-column align-content-stretch">
+                <div className="d-flex flex-lg-row-reverse flex-column"
+                    style={{
+                        height: "100%"
+                    }}>
                     <div className="flex-fill p-3">
                         <div className="p-3 justify-lg-content-center">
                             <svg xmlns="http://www.w3.org/2000/svg" 
@@ -86,7 +89,10 @@ const HomePage = () => {
                         </svg>
                     </div>
                 </div>
-                <div className="p-2 d-flex justify-content-center bg-light text-dark">
+                <div className="p-2 d-flex justify-content-center bg-light text-dark"
+                    style={{
+                        maxHeight:"5vh",
+                    }}>
                     &#169; Copyright 2022. Twitter Clone Jayrick Gacayan.
                 </div>
             </div>

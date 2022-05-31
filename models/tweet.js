@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.STRING
   }, {
     sequelize,
+    tableName: "tweets",
     timestamps: true,
     modelName: 'Tweet',
   });

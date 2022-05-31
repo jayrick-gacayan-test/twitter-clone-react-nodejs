@@ -162,12 +162,14 @@ const Profile = () => {
             {
                 thereUser && 
                 (
-                    <Modal idModal="editProfileModal">
+                    <Modal idModal="editProfileModal"
+                        ariaLabel="Profile Edit">
                         <div className="modal-header">
                             <h4 className="modal-title">Edit Profile</h4>
                             <button type="button" 
                                 className="btn-close"
-                                onClick={ closeEditProfileForm }></button>
+                                onClick={ closeEditProfileForm }
+                                aria-label="Close"></button>
                         </div>
 
                         <div className="modal-body">

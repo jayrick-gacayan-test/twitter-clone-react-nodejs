@@ -31,8 +31,6 @@ const Dashboard = () => {
     useEffect(
         () => {
             fetchUserTweets(id);
-
-            
         }, []
     );
     
@@ -46,8 +44,6 @@ const Dashboard = () => {
         const { userId, title, content } = tweet;
 
         if(!title.trim() || !content.trim() ) {
-            console.log("Title and content are required.");
-            alert("Title and or content is or are required.");
             return;
         }
 
@@ -59,7 +55,7 @@ const Dashboard = () => {
                     setTweet(initialTweet);
                 },
                 (error) => {
-                    console.log("Error ---- ",error);
+                    
                     
                 }
             );
@@ -103,6 +99,7 @@ const Dashboard = () => {
                 <main className="col-lg-6 g-0 border border-top-0 border-bottom-0">
                     <div className="container-fluid py-2 px-3">
                         <h4>Home</h4>
+                        
                     </div>
                     <hr className="m-0"/>
                     <div className="container-fluid py-2 px-3 mb-3">
@@ -139,8 +136,11 @@ const Dashboard = () => {
                     </div>
                     <hr />
                     <div className="container-fluid g-0">
-                        <TweetList tweets={ allTweet }
+                        {
+                            allTweet.length > 0 && 
+                            <TweetList tweets={ allTweet }
                             handleLikeTweet={ handleLikeTweet } />
+                        }
                     </div>
                 </main>
                 <RightSideContent />

@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     isLiked: DataTypes.BOOLEAN
   }, {
     sequelize,
+    tableName: "likes",
     timestamps: false,
     modelName: 'Like',
   });
