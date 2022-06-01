@@ -24,15 +24,30 @@ const SideNavigation = ({ userId }) => {
                             </svg>
                         </a>
                     </li>
+                    {
+                        userId && 
+                        (
+                            <React.Fragment>
+                                <SideNavigationMenuLink 
+                                    activeOnlyWhenExact={ true }
+                                    to="/dashboard"
+                                    icon="house-door-fill"
+                                    label="Home"
+                                />
+                                <SideNavigationMenuLink 
+                                    activeOnlyWhenExact={ true }
+                                    to={ `/profile/${ userId }` }
+                                    icon="person-fill"
+                                    label="Profile"
+                                />
+                            </React.Fragment>
+                        )
+                    }
                     <SideNavigationMenuLink 
                         activeOnlyWhenExact={ true }
-                        to="/dashboard"
-                        label="Home"
-                    />
-                    <SideNavigationMenuLink 
-                        activeOnlyWhenExact={ true }
-                        to={ `/profile/${ userId }` }
-                        label="Profile"
+                        to={ `/explore` }
+                        icon="hash"
+                        label="Explore"
                     />
                     <li className="nav-item">
                         <a className="nav-link fs-2 " 
@@ -49,7 +64,7 @@ const SideNavigation = ({ userId }) => {
     );
 }
 
-function SideNavigationMenuLink({ label, to, activeOnlyWhenExact}){
+function SideNavigationMenuLink({ label, to, icon, activeOnlyWhenExact}){
     let resolved = useResolvedPath(to);
     let match = useMatch(
         {
@@ -65,7 +80,7 @@ function SideNavigationMenuLink({ label, to, activeOnlyWhenExact}){
             <Link className={ `nav-link fs-2 ${ match ? ' active': '' }` }
                 to={ to }>
                 <h6>
-                    <i className="bi bi-house-door-fill me-3"></i>
+                    <i className={ `bi bi-${icon} me-3` }></i>
                     { label }
                 </h6>
             </Link>

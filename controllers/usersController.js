@@ -1,5 +1,8 @@
 /* models */
-const User = require("../models").User;
+const database = require("../models");
+const User = database.User;
+
+const Op = database.Sequelize.Op;
 
 exports.show = (req, res) => {
     return User.findByPk(req.params.userId, {})
@@ -14,8 +17,19 @@ exports.show = (req, res) => {
 }
 
 exports.showAll = (req, res) => {
+    console.log("Ops ---- ", Op);
     
-    return User.findAll()
+    const queryEmail = req.query.email;
+
+    const userEmailCondition = queryEmail ? {
+        where: {
+            email: { 
+                [Op.iLike] : `%${ queryEmail }%`
+            }
+        }
+    }:{};
+
+    return User.findAll(userEmailCondition)
         .then(
             (users) => {
                 if(!users) return res.status(404).send({ error: "You do not have any tweets." });

@@ -1,23 +1,32 @@
 const { authorizeJwt } = require("../middlewares");
 const tweetsController = require("../controllers").tweets;
+const router = require("express").Router();
 
 module.exports = app => {
-    app.get("/api/tweets/:tweetId",
-        tweetsController.show);
-
-    app.get("/api/tweets/",
-        tweetsController.showAll
-    );
-
-    app.post("/api/tweets/create",
+    
+    app.use("/api/tweets", router);
+    
+    // create tweet
+    router.post("/create",
         [ authorizeJwt.verifyToken ],
         tweetsController.create);
 
-    app.delete("/api/tweets/:tweetId",
+    // getting specified tweet
+    router.get("/:tweetId",
+        tweetsController.show);
+    
+    // getting all tweets
+    router.get("/",
+        tweetsController.showAll
+    );
+
+    // deleting tweet
+    router.delete("/:tweetId",
         [ authorizeJwt.verifyToken ],
         tweetsController.delete);
-
-    app.put("/api/tweets/:tweetId",
+1
+    // updating tweet
+    router.put("/:tweetId",
         [ authorizeJwt.verifyToken ],
         tweetsController.update);
 }

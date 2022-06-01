@@ -47,7 +47,7 @@ const TweetItem = (props) => {
                     <div className="d-flex justify-content-between">
                         <div >
                             <span>
-                                <i className="bi bi-heart-fill text-danger"
+                                <i className="bi bi-hand-thumbs-up text-danger"
                                     onClick={
                                         (event) => {
                                             props.handleLikeTweet(event);

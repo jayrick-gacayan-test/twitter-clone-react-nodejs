@@ -1,8 +1,11 @@
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
+const multer = require('multer');
 
+const upload = multer();
 const app = express();
+
 const PORT = process.env.PORT || 5001;
 const ORIGIN_PORT = process.env.ORIGIN_PORT;
 
@@ -16,7 +19,8 @@ app.use(
     express.urlencoded({
         extended: true
     })
-);  
+);
+app.use(upload.array());
 
 
 app.get("/api",

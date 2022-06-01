@@ -1,4 +1,0 @@
-
-exports.upload = (req, res) =>{
-    
-}

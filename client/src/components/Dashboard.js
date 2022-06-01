@@ -65,7 +65,6 @@ const Dashboard = () => {
         TweetService.getUserTweets(id)
             .then(
                 (response) => {
-                    console.log("Tweet --- ", response.data);
                     setAllTweet(response.data);
                 },
                 (error) => {

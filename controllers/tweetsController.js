@@ -1,6 +1,7 @@
 /* models */
 const Tweet = require("../models").Tweet;
 const User = require("../models").User;
+const Like = require("../models").Like;
 
 exports.show = (req, res) => {
     return Tweet.findByPk(req.params.tweetId, {
@@ -22,16 +23,22 @@ exports.show = (req, res) => {
 exports.showAll = (req, res) => {
     
     const { userId } = req.query;
+    console.log("User id === ", userId );
+    const userInclude = {
+        model: User,
+    }
+
+    const tweetCondition = userId ? {
+        ...userInclude, 
+        attributes: [ "email", "firstName", "lastName"],
+            where: {
+                id: userId
+            }
+    }: userInclude;
 
     return Tweet.findAll({
-                    include: {
-                        model: User,
-                        attributes: [ "email", "firstName", "lastName"],
-                        where: {
-                            id: userId
-                        }
-                    }
-                })
+                include: tweetCondition
+            })
             .then(
                 (tweets) => {
                     if(!tweets) return res.status(404).send({ error: "You do not have any tweets." });
@@ -89,4 +96,13 @@ exports.update = async(req, res) => {
                         }
                     )
                     .catch(error => res.status(400).send(error));
+}
+
+exports.likeTweet = async (res, req) => {
+    const { tweetId } = req.params.tweetId;
+
+    return res.status(201).json({
+        tweetId: tweetId,
+        userId: req.body.userId
+    })
 }

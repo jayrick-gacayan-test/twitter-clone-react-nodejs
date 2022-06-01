@@ -27,11 +27,16 @@ const deleteTweet = (id) => {
     return axios.delete(API_URL + `${ id }`);
 }
 
+const getTweets = () => {
+    return axios.get(API_URL);
+}
+
 const TweetService = {
     createTweet,
     getUserTweets,
     getTweet,
-    deleteTweet
+    deleteTweet,
+    getTweets
 }
 
 export default TweetService;

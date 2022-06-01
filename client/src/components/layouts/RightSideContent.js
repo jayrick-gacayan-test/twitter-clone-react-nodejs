@@ -53,6 +53,8 @@ const RightSideContent = () => {
                     onChange={ null }/>
                 
             </div>
+            {
+            
             <div className="card bg-light mb-3 rounded-3">
                 <div className="card-header bg-light">
                     <h5>Who to follow</h5>
@@ -63,6 +65,7 @@ const RightSideContent = () => {
                     </ul>
                 </div>
             </div>
+            }
         </aside>
     );
 }

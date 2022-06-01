@@ -15,6 +15,7 @@ import RegisterPage from './components/RegisterPage';
 import HomePage from './components/HomePage';
 import Profile from './components/Profile';
 import Tweet from './components/Tweet';
+import Explore from './components/Explore';
 
 /* context */
 import { AuthProvider } from './contexts/auth_context'
@@ -30,6 +31,9 @@ function App(){
                         element={ <Profile /> }/>
                     <Route path="/tweets/:tweetId" 
                         element={ <Tweet /> } />
+                    <Route path="/explore"
+                        element={ <Explore /> } />
+                        
                     <Route path="/dashboard" 
                         element={
                             <PrivateRoute>

@@ -93,7 +93,7 @@ module.exports = (sequelize, DataTypes) => {
           User.password = bcrypt.hashSync(User.password, 10);
       },
       beforeFind : (options) => {
-        console.log("Option attributes ---- ",options);
+        //console.log("Option attributes ---- ",options);
       },
       beforeValidate:(User, options) => {
         

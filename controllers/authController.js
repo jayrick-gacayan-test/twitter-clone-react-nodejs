@@ -1,21 +1,21 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const config = require('../config/config');
-const database = require('../models');
 
 /* models */
-const User = database.User;
+const User = require("../models").User;
 
 const errorBreakdown = (errors) => {
     const errObj = {};
 
-    errors.map((error) => {
-                        
-        if(error.path in errObj)
-            errObj[error.path] = [...errObj[error.path], error.message ];
-        else
-            errObj[error.path] = [ error.message ];
-    });
+    errors.map(
+        (error) => {
+            if(error.path in errObj)
+                errObj[error.path] = [...errObj[error.path], error.message ];
+            else
+                errObj[error.path] = [ error.message ];
+        }
+    );
 
     return errObj;
 }
@@ -28,14 +28,11 @@ exports.register = async (req, res) => {
     try{
         user = await User.build({ email, password, cfpswd });
         
-        // checks if email exists.
-        hasEmail = await user.hasEmail();
+        hasEmail = await user.hasEmail(); // checks if email exists.
         let validateUser = await user.validate(
                             { 
                                 fields: ["email", "password", "cfpswd"]
                             });//validating fields
-    
-        
     
     }catch(err){
         let errObj = {};
