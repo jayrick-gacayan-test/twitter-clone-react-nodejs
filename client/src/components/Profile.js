@@ -14,7 +14,7 @@ import AuthService from '../services/auth_service';
 import ModalUtility from '../utilities/modal_utility';
 
 const Profile = () => {
-    const { id } = AuthService.getCurrentUser();
+    //const { id } = AuthService.getCurrentUser();
     const { userId } = useParams();
     
     const initialPersonName = {
@@ -117,7 +117,7 @@ const Profile = () => {
                     <div className="container-fluid py-2 px-3">
                         <h4>Profile</h4>
                     </div>
-                    <hr className="m-0"/>
+                    
                     {
                         errorText &&
                         (
@@ -128,18 +128,47 @@ const Profile = () => {
                             </div>
                         )
                     }
+                    <div className="mt-3"
+                        style={{
+                            height: "200px",
+                            backgroundColor: "skyblue"
+                        }}>
+                    </div>
+                    <div className="position-relative clearfix justify-content-between p-3">
+                        <span 
+                            className="mb-3 d-flex justify-content-center p-3 text-white"
+                            style={{
+                            borderRadius: "50%",
+                            height: "140px",
+                            width: "140px",
+                            border: "2px solid white",
+                            display: "inline-block",
+                            position: "absolute",
+                            top: "-60px",
+                            left: "20px",
+                            zIndex: 5,
+                            backgroundColor: "skyblue"
+                        }}>
+                            
+                        </span>
+                        <button type="button" 
+                                    className="btn btn-outline-info rounded-pill float-end " 
+                                    onClick={ openEditProfileForm }>Edit Profile</button>
+                        {
+                            AuthService.getCurrentUser() && AuthService.getCurrentUser().id === user.id && 
+                            (
+                                <button type="button" 
+                                    className="btn btn-outline-info rounded-pill float-end" 
+                                    onClick={ openEditProfileForm }>Edit Profile</button>
+                            )
+                        }
+                    </div>
+
+
                     {   
                         thereUser &&    
                         (
-                            <div className="container-fluid py-2 px-3">
-                                {
-                                    id === user.id && 
-                                    (
-                                        <button type="button" 
-                                            className="btn btn-outline-info rounded-pill float-end" 
-                                            onClick={ openEditProfileForm }>Edit Profile</button>
-                                    )
-                                }
+                            <div className="container-fluid py-3 px-3">
                                 
                                 <p className="font-weight-bold mt-3">
                                     <span className="fs-5 me-1 text-dark fw-bold">{ `${ firstName } ${ lastName }`}</span>

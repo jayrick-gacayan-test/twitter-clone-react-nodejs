@@ -1,26 +1,22 @@
-const multer = require("multer");
 const path = require("path");
-const fs = require('fs');
-const userImagePath = path.join(__dirname , '../client/src/storage/images/', 'profile');
+const fs = require("fs");
+const db = require("../models");
+const User = db.User;
 
 
 exports.upload = (req, res) =>{
-    console.log("Request ---- ", req.body);
-    console.log("Request ---- ", userImagePath);
-    console.log("Exist file --- ", fs.existsSync(userImagePath));
+    //const userImagePath = path.join(__dirname , '../client/src/storage/images/', 'profile');
+    //const formData = multer().single('user_image');
 
-    return res.status(201).json(req.body);
-    /* fs.access(userImagePath,(error) => {
-        if(error)
-        {
-            fs.mkdir(userImagePath, 
-                (err) => {
-                    if(err) return res.status(501).json(err);
-                }
-            );
-        }
+    /* formData(req, res, (error) => {
+        if(error instanceof multer.MulterError)
+            return res.status(500).json(error)
+        else if(error) return res.status(500).json(error);
+        
+        return res.status(201).json(req.file);
     }); */
 
+    return res.status(200).json(req.file);
     /* const storage = multer.diskStorage({
         destination: (req, file, cb) => { 
             cb(null, path.join(__dirname , '../client/src/storage/images/', 'profile'));
@@ -38,5 +34,4 @@ exports.upload = (req, res) =>{
         else if(error) return res.status(500).json(error);
     }); */
 
-    
 }

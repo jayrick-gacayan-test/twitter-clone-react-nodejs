@@ -1,9 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
-const multer = require('multer');
-
-const upload = multer();
+const path = require("path")
 const app = express();
 
 const PORT = process.env.PORT || 5001;
@@ -14,33 +12,12 @@ let corsOption = {
 }
 
 app.use(cors(corsOption));
+
 app.use(express.json());
 app.use(
     express.urlencoded({
         extended: true
     })
-);
-app.use(upload.array());
-
-
-app.get("/api",
-    (req, res) => {
-        console.log("Test token ---- " ,PORT);
-        res.json({
-            text : "Test Port --- " + PORT
-        });
-        
-    }
-);
-
-app.get("/api/hello",
-    (req, res) => {
-        console.log("Test token ---- " , req.baseUrl);
-        res.json({
-            message : "Welcome to react nodejs test"
-        });
-        
-    }
 );
 
 /* routes */

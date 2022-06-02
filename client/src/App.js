@@ -33,7 +33,15 @@ function App(){
                         element={ <Tweet /> } />
                     <Route path="/explore"
                         element={ <Explore /> } />
-                        
+
+                    <Route path="/profile/:userId/edit"
+                        element={
+                                <PrivateRoute>
+                                    <Profile />
+                                </PrivateRoute>
+                            } 
+                    />
+                    
                     <Route path="/dashboard" 
                         element={
                             <PrivateRoute>
