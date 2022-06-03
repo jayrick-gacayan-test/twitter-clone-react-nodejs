@@ -3,6 +3,7 @@ const database = require("../models");
 const User = database.User;
 
 const Op = database.Sequelize.Op;
+const path = require("path");
 
 exports.show = (req, res) => {
     return User.findByPk(req.params.userId, {})
@@ -17,7 +18,6 @@ exports.show = (req, res) => {
 }
 
 exports.showAll = (req, res) => {
-    console.log("Ops ---- ", Op);
     
     const queryEmail = req.query.email;
 
@@ -41,9 +41,39 @@ exports.showAll = (req, res) => {
 }
 
 exports.update = async(req, res) => {
+    const fs = require("fs");
     const id = req.params.userId;
-    
-    return await User.update(req.body, 
+    let userImageName = null;
+
+    if(req.files && req.files.userImage)
+    {
+        const userImage = req.files.userImage;
+        const userImagepath = path.join(__dirname, '../storage/images', "profile");
+        
+        userImageName = Date.now() + "_" + id + path.extname(userImage.name);
+        const toUpdateUser = await User.findByPk(id);
+
+        if(toUpdateUser.userImage !== "defaultImage.png")
+            fs.unlinkSync(userImagepath + "/" + toUpdateUser.userImage);
+
+        userImage.mv(userImagepath + "/" + userImageName, 
+            (error) => {
+                if(error) return res.status(403).json(error);
+            }
+        );
+ 
+    }
+
+    const userName = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName
+    }
+    const userUpdateField = userImageName ? {
+        ...userName,
+        userImage: userImageName
+    }: userName;
+
+    return await User.update(userUpdateField, 
                                 { where : { id : id }})
                     .then(
                         (num) => {

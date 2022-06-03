@@ -33,7 +33,19 @@ function App(){
                         element={ <Tweet /> } />
                     <Route path="/explore"
                         element={ <Explore /> } />
-
+                    {/* {
+                        <Route path="/profile"
+                            element={ <Profile />}>
+                                <Route path="/:userId"
+                                    element={<h1>Hello World</h1>}/>
+                                <Route path="/:userId/edit" 
+                                    element={
+                                        <PrivateRoute>
+                                            <h1>Edit profile.</h1>
+                                        </PrivateRoute>
+                                    }/>
+                        </Route>
+                    } */}
                     <Route path="/profile/:userId/edit"
                         element={
                                 <PrivateRoute>

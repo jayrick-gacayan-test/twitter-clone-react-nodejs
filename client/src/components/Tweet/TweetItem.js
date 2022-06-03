@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import DummyImage from "../layouts/DummyImage";
 
+const fileImageBaseUrl = "http://localhost:3001/files";
+
 const TweetItem = (props) => {
     const { tweet, handleLikeTweet } = props;
     const tweetDate = new Date(tweet.createdAt);
@@ -9,20 +11,20 @@ const TweetItem = (props) => {
     const tweetFirstName = tweet.User.firstName || "";
     const tweetLastName = tweet.User.lastName || "";  
     const tweetName = `${tweetFirstName} ${tweetLastName}`;
-
+    
     return (
         <React.Fragment>
             <div className="d-flex">
                 <div className="ms-3">
-                    <DummyImage 
-                        className="text-dark"
+                    <img src={ `${fileImageBaseUrl}/profile/${tweet.User.userImage}`}
+                        alt={`${tweetFirstName}-image`}
+                        className="rounded-circle d-inline-block"
                         style={{
                             width: "60px",
                             height: "60px",
                             maxWidth: "60px",
                             maxHeight: "60px",
-                        }}
-                    />
+                        }}/>                   
                 </div>
                 <div className="flex-grow-1 px-3">
                     <Link key={ tweet.id } 

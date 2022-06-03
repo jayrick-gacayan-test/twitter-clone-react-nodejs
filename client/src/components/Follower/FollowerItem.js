@@ -1,21 +1,21 @@
 import React from 'react';
 
-import DummyImage from '../layouts/DummyImage';
+const fileImageBaseUrl = "http://localhost:3001/files";
 const FollowerItem = (props) => {
 
     const { user } = props;
     return (
         <li className="list-group-item d-flex bg-light">
             <div className="me-2 flex-shrink-1">
-                <DummyImage 
-                    className="bg-light text-dark"
+                <img src={ `${ fileImageBaseUrl }/profile/${user.userImage}`}
+                    alt={`${ user.firstName }-image`}
+                    className="rounded-circle d-inline-block"
                     style={{
                         width: "60px",
                         height: "60px",
                         maxWidth: "60px",
                         maxHeight: "60px",
-                    }}
-                />
+                    }}/> 
             </div>
             <div className="flex-grow-1 bg-light d-flex flex-column flex-xxl-row justify-content-between">
                 <div className="d-flex flex-wrap">

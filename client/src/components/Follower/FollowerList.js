@@ -1,4 +1,4 @@
-import React, { useTransition } from 'react';
+import React from 'react';
 
 import FollowerItem from './FollowerItem';
 
@@ -9,8 +9,9 @@ const FollowerList = (props) => {
 
     //const { id } = AuthService.getCurrentUser();
 
-    const userList = AuthService.getCurrentUser() ? users.filter(
-        (user) => { return user.id !== AuthService.getCurrentUser().id }): users;
+    const userList = AuthService.getCurrentUser() ? 
+                        users.filter((user) => { return user.id !== AuthService.getCurrentUser().id }) : 
+                        users;
 
     return (
         userList.length > 0 &&

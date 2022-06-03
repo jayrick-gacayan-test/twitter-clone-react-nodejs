@@ -2,11 +2,11 @@
 const auth = require("./authController");
 const users = require("./usersController");
 const tweets = require("./tweetsController");
-const uploads = require("./uploadsController");
+const files = require("./filesController");
 
 module.exports = {
     auth,
     tweets,
     users,
-    uploads
+    files
 }

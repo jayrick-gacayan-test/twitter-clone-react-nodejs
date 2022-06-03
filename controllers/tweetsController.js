@@ -7,7 +7,7 @@ exports.show = (req, res) => {
     return Tweet.findByPk(req.params.tweetId, {
                 include : {
                     model : User,
-                    attributes: [ "email", "firstName", "lastName" ]
+                    attributes: [ "email", "firstName", "lastName", "userImage" ]
                 }
             })
             .then(
@@ -30,7 +30,7 @@ exports.showAll = (req, res) => {
 
     const tweetCondition = userId ? {
         ...userInclude, 
-        attributes: [ "email", "firstName", "lastName"],
+        attributes: [ "email", "firstName", "lastName", "userImage" ],
             where: {
                 id: userId
             }

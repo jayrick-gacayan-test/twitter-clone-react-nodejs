@@ -1,6 +1,6 @@
 const usersController = require("../controllers").users;
 const { authorizeJwt } = require("../middlewares");
-module.exports = app => {
+module.exports = (app) => {
     app.get("/api/users/:userId", 
         usersController.show);
 

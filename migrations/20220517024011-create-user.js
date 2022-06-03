@@ -34,6 +34,11 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      userImage:{
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: "defaultImage.png"
       }
     });
   },

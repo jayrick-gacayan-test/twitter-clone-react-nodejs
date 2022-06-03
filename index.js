@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
-const path = require("path")
+const expressFileUpload = require("express-fileupload");
 const app = express();
 
 const PORT = process.env.PORT || 5001;
@@ -13,11 +13,19 @@ let corsOption = {
 
 app.use(cors(corsOption));
 
+// for headers Content-Type: application/json
 app.use(express.json());
+
+// for headers Content-Type: application/www-form-urlencoded
 app.use(
     express.urlencoded({
         extended: true
     })
+);
+
+// for headers Content Type: multipart/form-data
+app.use(
+    expressFileUpload({ createParentPath: true })
 );
 
 /* routes */

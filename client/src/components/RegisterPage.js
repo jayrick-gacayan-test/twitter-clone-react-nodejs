@@ -16,6 +16,7 @@ import './layouts/success.modal.css';
 
 const RegisterPage = () => {
     let navigate = useNavigate();
+    
     const initialUser = {
         email: "",
         password: "",
