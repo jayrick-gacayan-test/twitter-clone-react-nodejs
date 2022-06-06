@@ -51,7 +51,7 @@ const SideNavigation = ({ userId }) => {
                     />
                     <li className="nav-item">
                         <a className="nav-link fs-2 " 
-                            href={ void(0) }>
+                            href="/dashboard">
                             <h6>
                                 <i className="bi bi-card-text me-3"></i>
                                 List

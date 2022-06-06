@@ -36,18 +36,19 @@ const ProfileInfo = ({ user, thereUser}) => {
                     top: "-60px",
                     left: "20px",
                     zIndex: 5,
+                    backgroundColor: "white"
                 }}>
                 {
                     user.userImage && 
                     <img src={ `${ fileImageBaseUrl }/profile/${user.userImage}`}
-                        alt={`${ user.firstName }-image`}
+                        alt={`${ user.firstName }-pic`}
                         className="rounded-circle d-inline-block"
                         style={{
                             width: "100%",
                             height: "100%",
                             maxWidth: "100%",
                             maxHeight: "100%",
-                            zIndex: 5,
+                            zIndex: 8,
                         }}/>
                 }
                 </span>
@@ -64,7 +65,7 @@ const ProfileInfo = ({ user, thereUser}) => {
                     )
                 }
             </div>
-            <div className="container-fluid py-3 px-3">
+            <div className="container-fluid py-3 px-3 mt-5">
                 <p className="font-weight-bold mt-3">
                     <span className="fs-5 me-1 text-dark fw-bold">{ `${ firstName } ${ lastName }`}</span>
                     <span className="lead fs-5 align-baseline">@ { user.email }</span>

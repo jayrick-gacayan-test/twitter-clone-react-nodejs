@@ -33,6 +33,9 @@ function App(){
                         element={ <Tweet /> } />
                     <Route path="/explore"
                         element={ <Explore /> } />
+                    <Route path="/search" 
+                        element={ <Explore /> }
+                    />
                     {/* {
                         <Route path="/profile"
                             element={ <Profile />}>

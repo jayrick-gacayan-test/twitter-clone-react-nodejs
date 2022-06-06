@@ -6,6 +6,7 @@ const EditProfile = () => {
             <div className="container-fluid py-2 px-3">
                 <h4>Edit Profile</h4>
             </div>
+            <hr className="m-0" />
             <div className="container-fluid py-2 px-3">
                 <form>
                     <div className="form-floating mb-3 mt-3">

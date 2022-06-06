@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { matchPath, matchRoutes, useLocation, useNavigate, useParams, useResolvedPath } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -10,7 +10,6 @@ import ProfileInfo from './Profile/ProfileInfo';
 
 /* services */
 import UserService from '../services/user_service';
-import AuthService from '../services/auth_service';
 
 /* utilities */
 
@@ -18,7 +17,6 @@ const Profile = () => {
     //const { id } = AuthService.getCurrentUser();
     const { userId } = useParams();
     let location = useLocation();
-    let navigate = useNavigate();
     
     const [ user, setUser ] = useState({});
     const [ thereUser, hasThereUser ] = useState(false);
@@ -51,10 +49,6 @@ const Profile = () => {
         }
         ,[ userId ]
     );
-
-    const joinedAt = !user ? null : new Date(user.createdAt);
-    const firstName = user.firstName !== null ? user.firstName : "";
-    const lastName = user.lastName !== null ? user.lastName : "";
     
     return (
         <React.Fragment>

@@ -22,10 +22,15 @@ const getAllUsers = () => {
     return axios.get(API_URL);
 };
 
+const getAllUsersByEmail = (email) => {
+    return axios.get(API_URL + `?email=${ email }`);
+}
+
 const UserService = {
     getUser,
     updateProfile,
-    getAllUsers
+    getAllUsers,
+    getAllUsersByEmail
 }
 
 export default UserService;

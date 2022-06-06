@@ -1,11 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import DummyImage from "../layouts/DummyImage";
 
 const fileImageBaseUrl = "http://localhost:3001/files";
 
 const TweetItem = (props) => {
-    const { tweet, handleLikeTweet } = props;
+    const { tweet } = props;
     const tweetDate = new Date(tweet.createdAt);
     
     const tweetFirstName = tweet.User.firstName || "";
@@ -17,7 +16,7 @@ const TweetItem = (props) => {
             <div className="d-flex">
                 <div className="ms-3">
                     <img src={ `${fileImageBaseUrl}/profile/${tweet.User.userImage}`}
-                        alt={`${tweetFirstName}-image`}
+                        alt={`${tweetFirstName}-pic`}
                         className="rounded-circle d-inline-block"
                         style={{
                             width: "60px",

@@ -8,10 +8,8 @@ import TweetItem from './Tweet/TweetItem';
 
 /* services */
 import TweetService from '../services/tweet_service';
-import AuthService from '../services/auth_service';
-
 const Tweet = () => {
-    const { id } = AuthService.getCurrentUser();
+    //const { id } = AuthService.getCurrentUser();
     const { tweetId } = useParams();
 
     const initialTweetInfo = {
@@ -52,13 +50,13 @@ const Tweet = () => {
         ,[ tweetId ]
     );
 
-    const deleteTweet = (tweetId) => {
+    /* const deleteTweet = (tweetId) => {
         
-    }
+    } */
 
 
-    const tweetDate = !tweet ? null: new Date(tweet.createdAt);
-
+    //const tweetDate = !tweet ? null: new Date(tweet.createdAt);
+    console.log("TweetInfo ==== ", tweetInfo);
     return (
         <React.Fragment>
             <div className="container-fluid row">

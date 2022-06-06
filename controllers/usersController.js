@@ -21,13 +21,15 @@ exports.showAll = (req, res) => {
     
     const queryEmail = req.query.email;
 
-    const userEmailCondition = queryEmail ? {
-        where: {
-            email: { 
-                [Op.iLike] : `%${ queryEmail }%`
-            }
-        }
-    }:{};
+    const userEmailCondition = queryEmail ? 
+                {
+                    where: {
+                        email: { 
+                            [Op.iLike] : `%${ queryEmail }%`
+                        }
+                    }
+                } : 
+                {};
 
     return User.findAll(userEmailCondition)
         .then(
@@ -68,6 +70,7 @@ exports.update = async(req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName
     }
+
     const userUpdateField = userImageName ? {
         ...userName,
         userImage: userImageName

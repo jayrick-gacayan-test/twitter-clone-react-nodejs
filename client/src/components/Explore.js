@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
 import RightSideContent from './layouts/RightSideContent';
+import TweetList from './Tweet/TweetList';
+import UserList from './User/UserList';
 
 /* Services */
 import AuthService from '../services/auth_service';
 import TweetService from '../services/tweet_service';
-import TweetList from './Tweet/TweetList';
+import UserService from '../services/user_service';
 
 const Explore = () => {
     //const { id, email, firstName, lastName } = AuthService.getCurrentUser();
+    
+    const [containerData, setContainerData] = useState([]);
+    const [searchParams] = useSearchParams();
 
-    const [tweets, setTweets] = useState([]);
+    const query = searchParams.get("email");
 
     useEffect(
         () => {
-            fetchTweets();
+            
+            if(!query)
+                fetchTweets();
+            else
+                fetchUsersByEmail(query);
+
+            console.log("query ---- ", query);
         }
-        ,[]
+        ,[query]
     );
 
     const fetchTweets = () => {
@@ -29,11 +41,10 @@ const Explore = () => {
                         const tweetsList = response.data;
                         
                         if(AuthService.getCurrentUser())
-                            setTweets(tweetsList.filter(
+                            setContainerData(tweetsList.filter(
                                 (tweet) => { return AuthService.getCurrentUser().id !== tweet.User.id }
                             ));
-                        else
-                        setTweets(tweetsList);
+                        else setContainerData(tweetsList);
                     }
                 },
                 (error) => {
@@ -42,8 +53,21 @@ const Explore = () => {
             );
     }
 
+
+    const fetchUsersByEmail = (query) => {
+        UserService.getAllUsersByEmail(query)
+                .then(
+                    (response) => {
+                        const usersList = response.data;
+
+                        setContainerData(usersList);
+                    },
+                    (error) => {
+                        console.log("Error ==== ", error);
+                    }
+                );
+    }
     const handleLikeTweet = (element) => {
-        console.log("This ---- ", element);
         
         const checkClassName = element.target.classList.contains("bi-heart-fill");
 
@@ -69,9 +93,14 @@ const Explore = () => {
                     <hr className="m-0"/>
                     <div className="container-fluid g-0 mt-3">
                         {
-                            tweets.length > 0 &&
-                            <TweetList tweets={ tweets }
-                                handleLlkeTweet={ handleLikeTweet }/>
+                            containerData.length > 0 &&
+                            (
+                                
+                                !query ?
+                                (<TweetList tweets={ containerData }
+                                    handleLlkeTweet={ handleLikeTweet } />) :
+                                (<UserList users={ containerData } />)
+                            )
                         }
                     </div>
                 </main>

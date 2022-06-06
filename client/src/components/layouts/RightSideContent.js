@@ -1,26 +1,35 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import UserService from "../../services/user_service";
 
 import FollowerList from "../Follower/FollowerList";
 
 
 const RightSideContent = () => {
-
+    let navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    
+    const [searchText, setSearchText] = useState("");
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    let query = searchParams.get("email");
+
     useEffect(
         () =>
         {
             fetchAllUsers();
+
+            if(query !== null)
+                setSearchText(query);
+            else
+                setSearchText(""); 
         }
-        ,[]
+        ,[query]
     );
 
     const fetchAllUsers = () => {
         UserService.getAllUsers()
             .then(
                 (response) => {
-                    console.log("Users --- ", response.data);
                     setUsers(response.data);
                 },
                 (error) => {
@@ -30,6 +39,17 @@ const RightSideContent = () => {
             );
     }
 
+    const handleSearchInputChange = (event) => {
+        const { value } = event.target;
+
+        setSearchText(value);
+    };
+
+    const handleSearchInputKeyDown = (event) => {
+        if(event.keyCode === 13){
+            navigate(`/search?email=${ searchText }`); 
+        }
+    }
 
     return (
         <aside className='col-3 py-3 d-none d-lg-block'>
@@ -48,10 +68,14 @@ const RightSideContent = () => {
                     style={{
                         borderTopRightRadius: "50rem",
                         borderBottomRightRadius: "50rem"
-                    }} 
+                    }}
                     placeholder="Search Twitter"
-                    onChange={ null }/>
-                
+                    name="searchQuery"
+                    value={ searchText }
+                    onChange={ handleSearchInputChange }
+                    onKeyDown={ handleSearchInputKeyDown }
+                    
+                    />
             </div>
             {
             
