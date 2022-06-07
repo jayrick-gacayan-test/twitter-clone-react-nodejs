@@ -47,6 +47,8 @@ exports.update = async(req, res) => {
     const id = req.params.userId;
     let userImageName = null;
 
+    console.log("Request body --- ", req.body);
+    
     if(req.files && req.files.userImage)
     {
         const userImage = req.files.userImage;
@@ -86,7 +88,8 @@ exports.update = async(req, res) => {
                                     message: num[0] === 1 ?
                                     `The user id = ${ id } has been successfully updated.` :
                                     `The user id = ${ id } maybe deleted or maybe not exists.`
-                                })
+                                });
                         }
-                    );
+                    )
+                    .catch((error) => { return res.status(400).send(error); }); 
 }

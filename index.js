@@ -16,7 +16,7 @@ app.use(cors(corsOption));
 // for headers Content-Type: application/json
 app.use(express.json());
 
-// for headers Content-Type: application/www-form-urlencoded
+// for headers Content-Type: application/x-www-form-urlencoded
 app.use(
     express.urlencoded({
         extended: true

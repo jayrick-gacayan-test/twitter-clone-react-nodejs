@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Tweet.belongsTo( models.User, {
-        foreignKey: 'userId',
-        onDelete: 'CASCADE',
+      Tweet.hasMany(models.Like, {
+        foreignKey: 'tweetId',
+        as: 'likes',
       });
 
-      Tweet.hasMany( models.Like, {
-        foreignKey: 'tweetId',
-        as: 'tweets',
+      Tweet.belongsTo( models.User, {
+        foreignKey: 'userId',
+        as: "user",
       });
     }
   }
@@ -31,5 +31,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     modelName: 'Tweet',
   });
+
+  
+
+  
   return Tweet;
 };

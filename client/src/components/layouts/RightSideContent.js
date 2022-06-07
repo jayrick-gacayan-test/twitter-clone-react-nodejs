@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import UserService from "../../services/user_service";
 
 import FollowerList from "../Follower/FollowerList";
@@ -10,7 +10,7 @@ const RightSideContent = () => {
     const [users, setUsers] = useState([]);
     const [searchText, setSearchText] = useState("");
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     let query = searchParams.get("email");
 
     useEffect(

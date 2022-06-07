@@ -1,23 +1,38 @@
 /* models */
-const Tweet = require("../models").Tweet;
-const User = require("../models").User;
-const Like = require("../models").Like;
+const database = require('../models');
+
+const Tweet = database.Tweet;
+const User = database.User;
+const Like = database.Like;
+
+const Op = database.Sequelize.Op;
 
 exports.show = (req, res) => {
-    return Tweet.findByPk(req.params.tweetId, {
-                include : {
-                    model : User,
-                    attributes: [ "email", "firstName", "lastName", "userImage" ]
-                }
-            })
-            .then(
-                (tweet) => {
-                    if(!tweet) return res.status(404).send({ error: "Tweet not found." });
+    return Tweet.findByPk(req.params.tweetId,
+                                {
+                                    include: [
+                                        {
+                                            model: Like,
+                                            as: "likes",
+                                        }
+                                    ]
+                                        /*[ {
+                                            model : User,
+                                            as: "user",
+                                            attributes: [ "email", "firstName", "lastName", "userImage" ]
+                                        }, ]*/
+                                        
+                                }
+                            )
+                            .then(
+                                (tweet) => {
+                                    if(!tweet) return res.status(404).send({ error: "Tweet not found." });
 
-                    return res.status(200).send(tweet);
-                }
-            )
-            .catch((error) => res.status(400).send(error));
+                                    
+                                    return res.status(200).send(tweet);
+                                }
+                            )
+                            .catch((error) => res.status(400).send(error));
 }
 
 exports.showAll = (req, res) => {
@@ -26,6 +41,7 @@ exports.showAll = (req, res) => {
     console.log("User id === ", userId );
     const userInclude = {
         model: User,
+        as: "user"
     }
 
     const tweetCondition = userId ? {
@@ -37,7 +53,7 @@ exports.showAll = (req, res) => {
     }: userInclude;
 
     return Tweet.findAll({
-                include: tweetCondition
+                include: [ tweetCondition, { model: Like, as: "likes" }]
             })
             .then(
                 (tweets) => {
@@ -98,11 +114,42 @@ exports.update = async(req, res) => {
                     .catch(error => res.status(400).send(error));
 }
 
-exports.likeTweet = async (res, req) => {
-    const { tweetId } = req.params.tweetId;
+exports.likeTweet = async (req, res) => {
+    
+    const tweetId = req.params.tweetId;
+    const userId = req.body.userId;
 
-    return res.status(201).json({
-        tweetId: tweetId,
-        userId: req.body.userId
-    })
+    return await Like.findOne(
+                                { 
+                                    where: {
+                                        [Op.and] : [
+                                            { tweetId: tweetId },
+                                            { userId: userId }
+                                        ]
+                                    }
+                                }
+                            )
+                        .then(
+                            (tweetLike) => {
+                                if(!tweetLike)
+                                    return Like.create({ isLiked: true, tweetId, userId})
+                                                    .then((likeTweet) => { return res.status(200).send(likeTweet); })
+                                                    .catch((error) => res.status(400).send(error));
+                                else{
+                                    tweetLike.update({ isLiked: !tweetLike.isLiked },
+                                                        {
+                                                            where: {
+                                                                [Op.and] : [
+                                                                    { tweetId: tweetId },
+                                                                    { userId: userId }
+                                                                ]
+                                                            }
+                                                        }
+                                                    )
+                                                    .then(() => { return res.status(201).json(tweetLike); })
+                                                    .catch((error) => { return res.status(400).json(error) });
+                                }
+                            }
+                        )
+                        .catch((error) => { return res.status(400).send(error) });
 }

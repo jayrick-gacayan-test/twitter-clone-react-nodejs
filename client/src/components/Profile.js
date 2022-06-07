@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -17,11 +17,18 @@ const Profile = () => {
     //const { id } = AuthService.getCurrentUser();
     const { userId } = useParams();
     let location = useLocation();
-    
+    let navigate = useNavigate();
+
     const [ user, setUser ] = useState({});
     const [ thereUser, hasThereUser ] = useState(false);
     const [ errorText, setErrorText ] = useState(null);
-    
+
+    const [ currentUser, setCurrentUser ] = useState({
+        firstName: "",
+        lastName: "",
+        userImage: ""
+    });
+
     useEffect(
         () => {
             UserService.getUser(userId)
@@ -30,8 +37,12 @@ const Profile = () => {
                         setUser(response.data);
                         hasThereUser(true);
                         setErrorText(null);
-
                         
+                        setCurrentUser({
+                            firstName: response.data.firstName,
+                            lastName: response.data.lastName,
+                            userImage: response.data.userImage
+                        });
                     },
                     (error) => {
                         console.log("Error ---- ",error);
@@ -50,6 +61,32 @@ const Profile = () => {
         ,[ userId ]
     );
     
+    const handleUserUpdate = (user) => {
+        console.log("user --- ", user);
+        const { firstName, lastName, userImage } = user;
+        
+        UserService.updateProfile(userId, firstName, lastName, userImage)
+            .then(
+                (response) => {
+                    alert("Message: " + response.data.message); 
+                    navigate(`/profile/${ userId }`);
+                },
+                (error) => { 
+                    
+                    const resMessage =
+                        (error.response &&
+                        error.response.data &&
+                        error.response.data.error) ||
+                        error.message ||
+                        error.toString() || error; 
+
+                    console.log("Error ---- ", resMessage);
+                }
+            )
+          
+                
+    }
+        
     return (
         <React.Fragment>
             
@@ -68,9 +105,11 @@ const Profile = () => {
                         )
                     }
                     {
+                        user &&
                         location.pathname === `/profile/${userId}/edit` ? 
-                        <EditProfile user={ user } 
-                                    thereUser={ thereUser }/> :
+                        <EditProfile user={ currentUser } 
+                                    thereUser={ thereUser }
+                                    handleUserUpdate={ handleUserUpdate } /> :
                         <ProfileInfo user={ user } 
                                     thereUser={ thereUser } />
                     }

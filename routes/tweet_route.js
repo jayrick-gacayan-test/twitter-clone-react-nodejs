@@ -5,11 +5,15 @@ const router = require("express").Router();
 module.exports = app => {
     
     app.use("/api/tweets", router);
-    
+
     // create tweet
     router.post("/create",
         [ authorizeJwt.verifyToken ],
         tweetsController.create);
+
+    // like a tweet
+    router.post("/:tweetId/like",
+        tweetsController.likeTweet);
 
     // getting specified tweet
     router.get("/:tweetId",
@@ -29,4 +33,6 @@ module.exports = app => {
     router.put("/:tweetId",
         [ authorizeJwt.verifyToken ],
         tweetsController.update);
+
+    
 }

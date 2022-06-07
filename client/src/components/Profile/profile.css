@@ -1,0 +1,25 @@
+#updateUserForm .overlay-box .overlay-content{
+    position: absolute;
+    bottom: 0;
+    border-radius: 50%;
+    opacity: 0;
+    color: white;
+    
+    background-color: rgba(0, 0, 0, 0.4);
+    width: 100%;
+    padding: 20px;
+    font-size: 24px;
+    text-align: center;
+    height: 100%;
+
+
+    transition: 0.5s ease;
+    -webkit-transition: 0.5 ease;
+    -moz-transition: 0.5 ease;
+    -o-transition: 0.5 ease;
+}
+
+#updateUserForm .overlay-box:hover .overlay-content{
+    opacity: 1;
+}
+

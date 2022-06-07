@@ -17,7 +17,7 @@ function verifyToken(req, res, next){
 
             if(error) return res.status(401).send({ error: "Unauthorized" });
             
-            if(userId !== decoded.id) return res.status(401).send({ error: "Unauthorized" });
+            if(userId !== decoded.id) return res.status(403).send({ error: "Unauthorized" });
             
             
             next();
