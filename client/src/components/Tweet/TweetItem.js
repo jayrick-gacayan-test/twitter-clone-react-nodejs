@@ -7,15 +7,15 @@ const TweetItem = (props) => {
     const { tweet } = props;
     const tweetDate = new Date(tweet.createdAt);
     
-    const tweetFirstName = tweet.User.firstName || "";
-    const tweetLastName = tweet.User.lastName || "";  
+    const tweetFirstName = tweet.user.firstName || "";
+    const tweetLastName = tweet.user.lastName || "";  
     const tweetName = `${tweetFirstName} ${tweetLastName}`;
     
     return (
         <React.Fragment>
             <div className="d-flex">
                 <div className="ms-3">
-                    <img src={ `${fileImageBaseUrl}/profile/${tweet.User.userImage}`}
+                    <img src={ `${fileImageBaseUrl}/profile/${tweet.user.userImage}`}
                         alt={`${tweetFirstName}-pic`}
                         className="rounded-circle d-inline-block"
                         style={{
@@ -31,7 +31,7 @@ const TweetItem = (props) => {
                         className="d-block text-decoration-none text-dark">
                         <div className="d-flex">
                             <span className="me-1">{ tweetName }</span>
-                            <span className="me-1">@{ tweet.User.email }</span>
+                            <span className="me-1">@{ tweet.user.email }</span>
                             <span className="me-1">
                                 { tweetDate.toLocaleString("default", { month: "short" }) }
                                 { " " }

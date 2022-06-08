@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany( models.Tweet, {
+      User.hasMany(models.Tweet, {
         as: 'tweets',
         foreignKey: 'userId',
-      } );
+      });
+
+      
     }
 
     async hasEmail(){
@@ -87,7 +89,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   },{
-    
     hooks: {
       beforeSave: (User, options) => {
         if(options.fields.includes("cfpswd"))

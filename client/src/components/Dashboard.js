@@ -9,6 +9,9 @@ import TweetList from './Tweet/TweetList';
 import AuthService from '../services/auth_service';
 import TweetService from '../services/tweet_service';
 
+/* utilities */
+import { getScreenDimension } from '../utilities/screen_utility';
+
 const Dashboard = () => {
     const { id, email, firstName, lastName } = AuthService.getCurrentUser();
     
@@ -30,7 +33,30 @@ const Dashboard = () => {
 
     useEffect(
         () => {
+            const { innerWidth } = getScreenDimension();
+            const sidebarNavigation = document.getElementById("sidebar-navigation");
             fetchUserTweets(id);
+
+            if(innerWidth <= 991){
+                sidebarNavigation.classList.add("width-0");
+            }
+            else{
+                sidebarNavigation.classList.remove("width-0");
+            }
+
+            function handleResize(){
+                const { innerWidth } = getScreenDimension();
+                const sidebarNavigation = document.getElementById("sidebar-navigation");
+                if(innerWidth <= 991){
+                    sidebarNavigation.classList.add("width-0");
+                }
+                else{
+                    sidebarNavigation.classList.remove("width-0");
+                }
+            }
+            window.addEventListener('resize', handleResize);
+
+            return () => window.removeEventListener('resize', handleResize);
         }, []
     );
     
@@ -55,7 +81,7 @@ const Dashboard = () => {
                     setTweet(initialTweet);
                 },
                 (error) => {
-                    
+                    console.log(error);
                     
                 }
             );
@@ -93,12 +119,31 @@ const Dashboard = () => {
 
     return (
         <React.Fragment>
-            <div className="container-fluid row">
+            <div className="container-fluid row g-0">
                 <LeftSideContent />
-                <main className="col-lg-6 g-0 border border-top-0 border-bottom-0">
-                    <div className="container-fluid py-2 px-3">
-                        <h4>Home</h4>
-                        
+                <main className="col-lg-6 offset-lg-3 g-0 border border-top-0 border-bottom-0">
+                    <div className="container-fluid py-2 px-3 clearfix">
+                        <span className="fw-bold fs-3">Home</span>
+                        <span className="d-lg-none fw-bold fs-3 d-inline-block float-end"
+                            onClick={
+                                () => {
+                                    const sidebarNavigation = document.getElementById("sidebar-navigation");
+
+                                    sidebarNavigation.classList.toggle("d-none");
+                                    sidebarNavigation.classList.toggle("width-0");
+                                }
+                            }>
+                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                fill="currentColor" 
+                                className="bi bi-menu-app" 
+                                viewBox="0 0 16 16"
+                                style={{
+                                    width: "120px",
+                                    height: "36px"
+                                }}>
+                                <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </span>
                     </div>
                     <hr className="m-0"/>
                     <div className="container-fluid py-2 px-3 mb-3">

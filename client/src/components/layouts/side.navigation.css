@@ -6,3 +6,37 @@
 #sidebar-navigation .navbar-light .navbar-nav .nav-link:hover {
     color: #0dcaf0;
 }
+
+
+#sidebar-navigation{
+    position: absolute;
+    top: 0;
+    height: 100vh;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
+    border-right: 1px solid #dee2e6;
+    overflow: hidden;
+
+    transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+}
+
+.width-0{
+    width: 0px !important;
+}
+
+@media(min-width: 992px){
+    #sidebar-navigation{
+        background-color: transparent; 
+    }
+}
+
+@media(max-width: 991px){
+    #sidebar-navigation #sidebar-content{
+        width: 400px;
+        max-width: 400px;
+    }
+    
+}

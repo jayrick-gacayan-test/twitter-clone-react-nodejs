@@ -6,6 +6,9 @@ import AuthService from '../services/auth_service';
 /* components */
 import Modal from '../components/layouts/Modal';
 
+/* css */
+import './layouts/success.modal.css';
+
 /* utility */
 import ModalUtility from '../utilities/modal_utility';
 import { isObject } from '../utilities/datatype_utility';

@@ -52,7 +52,7 @@ const RightSideContent = () => {
     }
 
     return (
-        <aside className='col-3 py-3 d-none d-lg-block'>
+        <aside className='col-lg-3 p-3 d-none d-lg-block'>
             <div className="input-group mb-3">
                 <div className="input-group-prepend">
                     <span className="input-group-text bg-light"
@@ -78,17 +78,16 @@ const RightSideContent = () => {
                     />
             </div>
             {
-            
-            <div className="card bg-light mb-3 rounded-3">
-                <div className="card-header bg-light">
-                    <h5>Who to follow</h5>
+                <div className="card bg-light mb-3 rounded-3">
+                    <div className="card-header bg-light">
+                        <h5>Who to follow</h5>
+                    </div>
+                    <div className="card-body">
+                        <ul className="list-group list-group-flush d-flex">
+                            <FollowerList users={ users }/>
+                        </ul>
+                    </div>
                 </div>
-                <div className="card-body">
-                    <ul className="list-group list-group-flush d-flex">
-                        <FollowerList users={ users }/>
-                    </ul>
-                </div>
-            </div>
             }
         </aside>
     );

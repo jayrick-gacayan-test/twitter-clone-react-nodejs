@@ -12,16 +12,14 @@ exports.show = (req, res) => {
                                 {
                                     include: [
                                         {
-                                            model: Like,
-                                            as: "likes",
+                                            model: database.User,
+                                            as: 'user',
+                                        },
+                                        {
+                                            model: database.Like,
+                                            as: 'likes'
                                         }
-                                    ]
-                                        /*[ {
-                                            model : User,
-                                            as: "user",
-                                            attributes: [ "email", "firstName", "lastName", "userImage" ]
-                                        }, ]*/
-                                        
+                                    ]     
                                 }
                             )
                             .then(
@@ -53,7 +51,13 @@ exports.showAll = (req, res) => {
     }: userInclude;
 
     return Tweet.findAll({
-                include: [ tweetCondition, { model: Like, as: "likes" }]
+                include: [ 
+                            tweetCondition, 
+                            { 
+                                model: Like, 
+                                as: "likes"
+                            }
+                        ]
             })
             .then(
                 (tweets) => {

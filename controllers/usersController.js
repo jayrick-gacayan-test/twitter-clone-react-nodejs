@@ -1,20 +1,30 @@
 /* models */
 const database = require("../models");
 const User = database.User;
+const Tweet = database.Tweet;
 
 const Op = database.Sequelize.Op;
 const path = require("path");
 
 exports.show = (req, res) => {
-    return User.findByPk(req.params.userId, {})
-        .then(
-            (user) => {
-                if(!user) return res.status(404).send({ error: "User not found"});
-                
-                return res.status(200).send(user);
-            }
-        )
-        .catch(error => res.status(400).send(error));
+    return User.findByPk(req.params.userId,
+                {
+                    include: [
+                        {
+                            model: Tweet,
+                            as: "tweets"
+                        }
+                    ]
+                }
+            )
+            .then(
+                (user) => {
+                    if(!user) return res.status(404).send({ error: "User not found"});
+                    
+                    return res.status(200).send(user);
+                }
+            )
+            .catch(error => res.status(400).send(error));
 }
 
 exports.showAll = (req, res) => {
@@ -31,15 +41,25 @@ exports.showAll = (req, res) => {
                 } : 
                 {};
 
-    return User.findAll(userEmailCondition)
-        .then(
-            (users) => {
-                if(!users) return res.status(404).send({ error: "You do not have any tweets." });
+    return User.findAll(
+                            {
+                                ...userEmailCondition,
+                                include: [
+                                    {
+                                        model: Tweet,
+                                        as: "tweets"
+                                    }
+                                ]
+                            }
+                        )
+                        .then(
+                            (users) => {
+                                if(!users) return res.status(404).send({ error: "You do not have any tweets." });
 
-                return res.status(200).send(users);
-            }
-        )
-        .catch(error => res.status(400).send(error));
+                                return res.status(200).send(users);
+                            }
+                        )
+                        .catch(error => res.status(400).send(error));
 }
 
 exports.update = async(req, res) => {
