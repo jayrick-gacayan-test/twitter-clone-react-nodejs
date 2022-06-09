@@ -82,14 +82,13 @@ const SideNavigation = ({ userId }) => {
 
 function SideNavigationMenuLink({ label, to, icon, activeOnlyWhenExact}){
     let resolved = useResolvedPath(to);
+    
     let match = useMatch(
         {
             path: resolved.pathname,
             end: activeOnlyWhenExact
         }
     );
-
-    console.log();
 
     return (
         <li className="nav-item">

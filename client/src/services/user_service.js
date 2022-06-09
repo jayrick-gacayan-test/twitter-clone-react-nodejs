@@ -28,7 +28,7 @@ const getAllUsers = () => {
     return axios.get(API_URL);
 };
 
-const getAllUsersByEmail = (email) => {
+const getAllUsersByEmail = (email = '') => {
     return axios.get(API_URL + `?email=${ email }`);
 }
 

@@ -96,13 +96,14 @@ exports.logIn = async (req, res) => {
                                     config.jwt_auth.secret,
                                     { expiresIn : config.jwt_auth.jwtExpiration });
                 
-                const { id, email, firstName, lastName } = user;
-
+                const { id, email, firstName, lastName, userImage } = user;
+                
                 return res.status(200).send({
                     id, 
                     email,
                     firstName,
                     lastName,
+                    userImage,
                     accessToken: token,
                     message : "Your account login successfully."
                 });

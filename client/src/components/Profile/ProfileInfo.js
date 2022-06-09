@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AuthService from '../../services/auth_service';
+import TopMostContent from '../layouts/TopMostContent';
 
 const fileImageBaseUrl = "http://localhost:3001/files";
 
@@ -14,9 +15,8 @@ const ProfileInfo = ({ user, thereUser}) => {
     return(
         thereUser && 
         <React.Fragment>
-            <div className="container-fluid py-2 px-3">
-                <h4>Profile</h4>
-            </div>
+            <TopMostContent title="Profile" />
+            <hr className="m-0"/>
             <div className="mt-3"
                 style={{
                     height: "200px",

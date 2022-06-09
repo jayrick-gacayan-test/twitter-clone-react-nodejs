@@ -16,9 +16,10 @@ import HomePage from './components/HomePage';
 import Profile from './components/Profile';
 import Tweet from './components/Tweet';
 import Explore from './components/Explore';
+import Search from './components/Search';
 
 /* context */
-import { AuthProvider } from './contexts/auth_context'
+import { AuthProvider } from './contexts/auth_context';
 
 function App(){
     return(
@@ -34,21 +35,8 @@ function App(){
                     <Route path="/explore"
                         element={ <Explore /> } />
                     <Route path="/search" 
-                        element={ <Explore /> }
+                        element={ <Search /> }
                     />
-                    {/* {
-                        <Route path="/profile"
-                            element={ <Profile />}>
-                                <Route path="/:userId"
-                                    element={<h1>Hello World</h1>}/>
-                                <Route path="/:userId/edit" 
-                                    element={
-                                        <PrivateRoute>
-                                            <h1>Edit profile.</h1>
-                                        </PrivateRoute>
-                                    }/>
-                        </Route>
-                    } */}
                     <Route path="/profile/:userId/edit"
                         element={
                                 <PrivateRoute>
@@ -56,7 +44,6 @@ function App(){
                                 </PrivateRoute>
                             } 
                     />
-                    
                     <Route path="/dashboard" 
                         element={
                             <PrivateRoute>

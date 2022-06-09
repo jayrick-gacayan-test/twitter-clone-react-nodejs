@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import TopMostContent from '../layouts/TopMostContent';
 import './profile.css';
+
 const fileImageBaseUrl = "http://localhost:3001/files";
-
-
-
 const EditProfile = (props) => {
-    
 
     const initialUserUpdate = {
         userImage: null,
@@ -54,10 +52,8 @@ const EditProfile = (props) => {
     }
     return (
         <React.Fragment>
-            <div className="container-fluid py-2 px-3">
-                <h4>Edit Profile</h4>
-            </div>
-            <hr className="m-0" />
+            <TopMostContent title="Edit Profile" />
+            <hr className="m-0"/>
             <div className="container-fluid py-2 px-3">
                 <form id="updateUserForm"
                     onSubmit={ handleSubmitUserUpdate }>

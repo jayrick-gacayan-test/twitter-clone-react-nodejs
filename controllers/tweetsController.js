@@ -36,7 +36,6 @@ exports.show = (req, res) => {
 exports.showAll = (req, res) => {
     
     const { userId } = req.query;
-    console.log("User id === ", userId );
     const userInclude = {
         model: User,
         as: "user"
@@ -51,22 +50,22 @@ exports.showAll = (req, res) => {
     }: userInclude;
 
     return Tweet.findAll({
-                include: [ 
-                            tweetCondition, 
-                            { 
-                                model: Like, 
-                                as: "likes"
-                            }
-                        ]
-            })
-            .then(
-                (tweets) => {
-                    if(!tweets) return res.status(404).send({ error: "You do not have any tweets." });
+                            include: [ 
+                                        tweetCondition, 
+                                        { 
+                                            model: Like, 
+                                            as: "likes"
+                                        }
+                                    ]
+                    })
+                    .then(
+                        (tweets) => {
+                            if(!tweets) return res.status(404).send({ error: "You do not have any tweets." });
 
-                    return res.status(200).send(tweets);
-                }
-            )
-            .catch((error) => res.status(403).send(error));
+                            return res.status(200).send(tweets);
+                        }
+                    )
+                    .catch((error) => res.status(403).send(error));
 }
 
 

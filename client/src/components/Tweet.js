@@ -4,10 +4,16 @@ import { useParams } from 'react-router-dom';
 /* components */
 import LeftSideContent from './layouts/LeftSideContent';
 import RightSideContent from './layouts/RightSideContent';
+import TopMostContent from './layouts/TopMostContent';
 import TweetItem from './Tweet/TweetItem';
 
 /* services */
 import TweetService from '../services/tweet_service';
+
+/* utilities */
+import { getScreenDimension } from '../utilities/screen_utility';
+import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
+
 const Tweet = () => {
     //const { id } = AuthService.getCurrentUser();
     const { tweetId } = useParams();
@@ -24,6 +30,7 @@ const Tweet = () => {
 
     useEffect(
         () => {
+            
             TweetService.getTweet(tweetId)
                 .then(
                     (response) => {
@@ -46,6 +53,18 @@ const Tweet = () => {
                         setSuccessful(false);
                     }
                 );
+
+            const { innerWidth } = getScreenDimension();
+        
+            sidebarResponsive({ innerWidth });
+            
+            function handleResize(){
+                const { innerWidth } = getScreenDimension();
+                sidebarResponsive({ innerWidth });
+            }
+            window.addEventListener('resize', handleResize);
+
+            return () => window.removeEventListener('resize', handleResize);
         }
         ,[ tweetId ]
     );
@@ -59,12 +78,10 @@ const Tweet = () => {
     console.log("TweetInfo ==== ", tweetInfo);
     return (
         <React.Fragment>
-            <div className="container-fluid row">
+            <div className="container-fluid row g-0">
                 <LeftSideContent />
-                <main className="col-lg-6 g-0 border border-top-0 border-bottom-0">
-                    <div className="container-fluid py-2 px-3">
-                        <h4>Home</h4>
-                    </div>
+                <main className="col-lg-6 offset-lg-3 g-0 border border-top-0 border-bottom-0">z
+                    <TopMostContent title="Tweet" />
                     <hr className="mt-0"/>
                     {
                         errorText &&

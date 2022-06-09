@@ -2,7 +2,6 @@ import axios from "axios";
 import authHeader from "./auth_header";
 const API_URL = "http://localhost:3001/api/tweets/";
 
-
 const createTweet = (userId, title, content) => {
     return axios.post(API_URL + "create",
         {

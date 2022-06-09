@@ -12,6 +12,8 @@ import ProfileInfo from './Profile/ProfileInfo';
 import UserService from '../services/user_service';
 
 /* utilities */
+import { getScreenDimension } from '../utilities/screen_utility';
+import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
 const Profile = () => {
     //const { id } = AuthService.getCurrentUser();
@@ -31,6 +33,16 @@ const Profile = () => {
 
     useEffect(
         () => {
+            const { innerWidth } = getScreenDimension();
+            
+            sidebarResponsive({ innerWidth });
+            
+            function handleResize(){
+                const { innerWidth } = getScreenDimension();
+                sidebarResponsive({ innerWidth });
+            }
+            window.addEventListener('resize', handleResize);
+
             UserService.getUser(userId)
                 .then(
                     (response) =>{
@@ -57,6 +69,8 @@ const Profile = () => {
                         hasThereUser(false);
                     }
                 );
+            
+            return () => window.removeEventListener('resize', handleResize);
         }
         ,[ userId ]
     );
@@ -89,11 +103,9 @@ const Profile = () => {
         
     return (
         <React.Fragment>
-            
-            <div className="container-fluid row">
+            <div className="container-fluid row g-0">
                 <LeftSideContent />
-                
-                <main className="col-lg-6 g-0 border border-top-0 border-bottom-0">
+                <main className="col-lg-6 offset-lg-3 g-0 border border-top-0 border-bottom-0">
                     {
                         errorText &&
                         (

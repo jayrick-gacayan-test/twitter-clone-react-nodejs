@@ -9,7 +9,7 @@ const TweetItem = (props) => {
     
     const tweetFirstName = tweet.user.firstName || "";
     const tweetLastName = tweet.user.lastName || "";  
-    const tweetName = `${tweetFirstName} ${tweetLastName}`;
+    const tweetName = `${ tweetFirstName } ${ tweetLastName }`;
     
     return (
         <React.Fragment>
@@ -26,8 +26,7 @@ const TweetItem = (props) => {
                         }}/>                   
                 </div>
                 <div className="flex-grow-1 px-3">
-                    <Link key={ tweet.id } 
-                        to={ `/tweets/${ tweet.id }`}
+                    <Link to={ `/tweets/${ tweet.id }` }
                         className="d-block text-decoration-none text-dark">
                         <div className="d-flex">
                             <span className="me-1">{ tweetName }</span>
