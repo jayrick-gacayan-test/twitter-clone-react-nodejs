@@ -37,6 +37,16 @@ function App(){
                     <Route path="/search" 
                         element={ <Search /> }
                     />
+                    
+                    {/* 
+                        <Route path="/profile"
+                            element={ <Profile /> }>
+
+                            <Route>
+                        </Route>
+                        <Route 
+                            ></Route>
+                    */}
                     <Route path="/profile/:userId/edit"
                         element={
                                 <PrivateRoute>
@@ -44,6 +54,14 @@ function App(){
                                 </PrivateRoute>
                             } 
                     />
+                    <Route path="/tweets/:tweetId/edit"
+                        element={
+                                <PrivateRoute>
+                                    <Tweet />
+                                </PrivateRoute>
+                            } 
+                    />
+
                     <Route path="/dashboard" 
                         element={
                             <PrivateRoute>

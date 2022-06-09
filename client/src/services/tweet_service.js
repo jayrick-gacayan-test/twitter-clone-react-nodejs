@@ -22,12 +22,30 @@ const getTweet = (id) => {
     return axios.get(API_URL + `${ id }`);
 }
 
-const deleteTweet = (id) => {
-    return axios.delete(API_URL + `${ id }`);
+const deleteTweet = (id, userId) => {
+    return axios.delete(API_URL + `${ id }`,
+        {
+            userId
+        },
+        {
+            headers: authHeader()
+        });
 }
 
 const getTweets = () => {
     return axios.get(API_URL);
+}
+
+const updateTweet = (id, title, content, userId) => {
+    return axios.put(API_URL + `${ id }`,
+        {
+            title,
+            content,
+            userId
+        },
+        {
+            headers: authHeader()
+        });
 }
 
 const TweetService = {
@@ -35,6 +53,7 @@ const TweetService = {
     getUserTweets,
     getTweet,
     deleteTweet,
+    updateTweet,
     getTweets
 }
 

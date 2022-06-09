@@ -6,7 +6,7 @@ import TopMostContent from '../layouts/TopMostContent';
 
 const fileImageBaseUrl = "http://localhost:3001/files";
 
-const ProfileInfo = ({ user, thereUser}) => {
+const ProfileInfo = ({ user, thereUser }) => {
     let navigate = useNavigate();
     const joinedAt = !user ? null : new Date(user.createdAt);
     const firstName = user.firstName !== null ? user.firstName : "";

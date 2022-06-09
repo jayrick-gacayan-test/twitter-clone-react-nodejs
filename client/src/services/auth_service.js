@@ -16,20 +16,22 @@ const login = (email, password) => {
       email,
       password,
     })
-    .then((response) => {
-        const { id, email, firstName, lastName, userImage, accessToken } = response.data;
-        if (response.data.accessToken) {
-            localStorage.setItem("user", 
-                JSON.stringify({
-                    id, 
-                    email,
-                    firstName,
-                    lastName,
-                    userImage,
-                    accessToken }));
+    .then(
+        (response) => {
+            const { id, email, firstName, lastName, userImage, accessToken } = response.data;
+            if (response.data.accessToken) {
+                localStorage.setItem("user", 
+                    JSON.stringify({
+                        id, 
+                        email,
+                        firstName,
+                        lastName,
+                        userImage,
+                        accessToken }));
+            }
+            return response.data;
         }
-        return response.data;
-    });
+    );
 };
 
 const logout = () => {

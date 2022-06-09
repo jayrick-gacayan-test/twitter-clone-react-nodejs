@@ -113,7 +113,7 @@ const Dashboard = () => {
         <React.Fragment>
             <div className="container-fluid row g-0">
                 <LeftSideContent />
-                <main className="col-lg-6 offset-lg-3 g-0 border border-top-0 border-bottom-0">
+                <main className="col-lg-6 offset-lg-3 g-0 border-end">
                     <TopMostContent title="Home" />
                     <hr className="m-0"/>
                     <div className="container-fluid py-2 px-3 mb-3">

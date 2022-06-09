@@ -68,8 +68,6 @@ exports.showAll = (req, res) => {
                     .catch((error) => res.status(403).send(error));
 }
 
-
-
 exports.create = async(req, res) => {
     const { title, content, userId } = req.body;
     return await Tweet.create({ title, content, userId }, {})
@@ -100,8 +98,9 @@ exports.delete = async(req, res) => {
 
 exports.update = async(req, res) => {
     const id = req.params.tweetId;
-
-    return await Tweet.update(req.body, 
+    const { title, content } = req.body;
+    
+    return await Tweet.update({ title, content }, 
                                 { where : { id : id }})
                     .then(
                         (num) => {
@@ -114,7 +113,7 @@ exports.update = async(req, res) => {
                                     });
                         }
                     )
-                    .catch(error => res.status(400).send(error));
+                    .catch((error) => { return res.status(400).send(error); });
 }
 
 exports.likeTweet = async (req, res) => {

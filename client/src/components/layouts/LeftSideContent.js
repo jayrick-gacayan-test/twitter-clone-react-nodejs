@@ -39,7 +39,7 @@ const LeftSideContent = () => {
     return (
         <React.Fragment>
             <nav id="sidebar-navigation" 
-                className="col-lg-3 d-none d-lg-block">
+                className="col-lg-3 d-none d-lg-block border-end">
                 <div id="sidebar-content" 
                     className="p-lg-3 bg-white p-3 d-flex justify-content-between flex-column"
                     style={{

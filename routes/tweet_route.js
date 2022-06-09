@@ -33,6 +33,4 @@ module.exports = app => {
     router.put("/:tweetId",
         [ authorizeJwt.verifyToken ],
         tweetsController.update);
-
-    
 }

@@ -76,7 +76,6 @@ const Profile = () => {
     );
     
     const handleUserUpdate = (user) => {
-        console.log("user --- ", user);
         const { firstName, lastName, userImage } = user;
         
         UserService.updateProfile(userId, firstName, lastName, userImage)
@@ -118,7 +117,7 @@ const Profile = () => {
                     }
                     {
                         user &&
-                        location.pathname === `/profile/${userId}/edit` ? 
+                        location.pathname === `/profile/${ userId }/edit` ? 
                         <EditProfile user={ currentUser } 
                                     thereUser={ thereUser }
                                     handleUserUpdate={ handleUserUpdate } /> :

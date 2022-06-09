@@ -11,6 +11,8 @@ function verifyToken(req, res, next){
     if(req.query.userId) userId = parseInt(req.query.userId);
     if(req.body.userId) userId = parseInt(req.body.userId);
 
+
+    console.log("User id --- ", userId);
     jwt.verify(token,
         config.jwt_auth.secret,
         (error, decoded) => {

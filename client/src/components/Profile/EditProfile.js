@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import TopMostContent from '../layouts/TopMostContent';
-import './profile.css';
+import './edit.profile.css';
 
 const fileImageBaseUrl = "http://localhost:3001/files";
 const EditProfile = (props) => {
+
 
     const initialUserUpdate = {
         userImage: null,
@@ -33,8 +34,6 @@ const EditProfile = (props) => {
 
     const handleFileInputChange = (event) => {
         const { name, files } = event.target;
-        console.log("Name of the input file --- ", event.target.name);
-        console.log("File preview to be uploaded.... ", files)
         setCurrentUser({ ...currentUser, [name]: URL.createObjectURL(files[0])})
     }
 
@@ -42,14 +41,14 @@ const EditProfile = (props) => {
         event.preventDefault();
 
         const updateUser = {
-            firstName: currentUser.firstName,
-            lastName: currentUser.lastName,
+            firstName: currentUser.firstName.trim(),
+            lastName: currentUser.lastName.trim(),
             userImage: event.target["userImage"].files[0]
         }
-        console.log("Event ---- ", event.target["userImage"].files);
-
+        
         props.handleUserUpdate(updateUser);
     }
+
     return (
         <React.Fragment>
             <TopMostContent title="Edit Profile" />
