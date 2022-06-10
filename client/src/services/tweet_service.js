@@ -24,11 +24,11 @@ const getTweet = (id) => {
 
 const deleteTweet = (id, userId) => {
     return axios.delete(API_URL + `${ id }`,
-        {
-            userId
-        },
-        {
-            headers: authHeader()
+        {   
+            headers: authHeader(),
+            data:{
+                userId
+            }
         });
 }
 
@@ -46,6 +46,14 @@ const updateTweet = (id, title, content, userId) => {
         {
             headers: authHeader()
         });
+}
+
+const likeTweet = (tweetId, userId) => {
+
+    return axios.patch(API_URL + `${ tweetId }/like`, 
+            {
+                userId
+            });
 }
 
 const TweetService = {

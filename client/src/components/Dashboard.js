@@ -15,7 +15,12 @@ import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
 const Dashboard = () => {
-    const { id, email, firstName, lastName, userImage } = AuthService.getCurrentUser();
+    const { id, 
+            email, 
+            firstName, 
+            lastName, 
+            userImage 
+        } = AuthService.getCurrentUser();
     
     const initialTweet = {
             userId: id,

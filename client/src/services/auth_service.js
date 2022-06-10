@@ -21,13 +21,17 @@ const login = (email, password) => {
             const { id, email, firstName, lastName, userImage, accessToken } = response.data;
             if (response.data.accessToken) {
                 localStorage.setItem("user", 
-                    JSON.stringify({
-                        id, 
-                        email,
-                        firstName,
-                        lastName,
-                        userImage,
-                        accessToken }));
+                                        JSON.stringify(
+                                            {
+                                                id, 
+                                                email,
+                                                firstName,
+                                                lastName,
+                                                userImage,
+                                                accessToken 
+                                            }
+                                        )
+                                    );
             }
             return response.data;
         }

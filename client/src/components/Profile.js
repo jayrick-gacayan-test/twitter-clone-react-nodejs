@@ -10,6 +10,7 @@ import ProfileInfo from './Profile/ProfileInfo';
 
 /* services */
 import UserService from '../services/user_service';
+import AuthService from '../services/auth_service';
 
 /* utilities */
 import { getScreenDimension } from '../utilities/screen_utility';
@@ -50,6 +51,18 @@ const Profile = () => {
                         hasThereUser(true);
                         setErrorText(null);
                         
+                        if(AuthService.getCurrentUser()){
+                            const userStorage = AuthService.getCurrentUser();
+                            const { userImage } = response.data;
+                            if(userImage !== userStorage.userImage)
+                                localStorage.setItem("user",
+                                        JSON.stringify({
+                                                ...userStorage,
+                                                userImage
+                                            })
+                                    );
+                        }
+
                         setCurrentUser({
                             firstName: response.data.firstName,
                             lastName: response.data.lastName,
@@ -74,7 +87,7 @@ const Profile = () => {
         }
         ,[ userId ]
     );
-    
+
     const handleUserUpdate = (user) => {
         const { firstName, lastName, userImage } = user;
         

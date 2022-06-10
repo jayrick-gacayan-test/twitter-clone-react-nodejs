@@ -12,7 +12,7 @@ module.exports = app => {
         tweetsController.create);
 
     // like a tweet
-    router.post("/:tweetId/like",
+    router.patch("/:tweetId/like",
         tweetsController.likeTweet);
 
     // getting specified tweet

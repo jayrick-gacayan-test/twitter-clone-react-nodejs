@@ -20,6 +20,7 @@ const TweetItem = (props) => {
         const modalDeleteTweet = document.getElementById('modalDeleteTweet');
         ModalUtility.showModal(modalDeleteTweet);
     }
+
     return (
         <React.Fragment>
             <div className="d-flex">
@@ -103,13 +104,20 @@ const TweetItem = (props) => {
                     <div className="d-flex justify-content-between">
                         <div >
                             <span>
-                                <i className="bi bi-hand-thumbs-up text-danger"
+                                <i className="me-1 bi bi-hand-thumbs-up"
                                     onClick={
-                                        (event) => {
-                                            
+                                        () => {
+                                            if(AuthService.getCurrentUser())
+                                            {
+                                                if(tweet.userId === AuthService.getCurrentUser().id)
+                                                    alert("You can't like your own tweet");
+                                                else
+                                                    alert("thanks ---");
+                                            }
                                         }    
                                     }></i>
                             </span>
+                            
                         </div>
                     </div>
                 </div>

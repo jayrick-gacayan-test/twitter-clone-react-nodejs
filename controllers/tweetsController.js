@@ -17,16 +17,17 @@ exports.show = (req, res) => {
                                         },
                                         {
                                             model: database.Like,
-                                            as: 'likes'
+                                            as: 'likes',
+                                            required: true
                                         }
-                                    ]     
+                                    ]   
                                 }
                             )
                             .then(
                                 (tweet) => {
+                                    console.log("Tweet --- ", tweet);
                                     if(!tweet) return res.status(404).send({ error: "Tweet not found." });
 
-                                    
                                     return res.status(200).send(tweet);
                                 }
                             )
@@ -54,18 +55,18 @@ exports.showAll = (req, res) => {
                                         tweetCondition, 
                                         { 
                                             model: Like, 
-                                            as: "likes"
+                                            as: "likes",
                                         }
                                     ]
-                    })
-                    .then(
-                        (tweets) => {
-                            if(!tweets) return res.status(404).send({ error: "You do not have any tweets." });
+                        })
+                        .then(
+                            (tweets) => {
+                                if(!tweets) return res.status(404).send({ error: "You do not have any tweets." });
 
-                            return res.status(200).send(tweets);
-                        }
-                    )
-                    .catch((error) => res.status(403).send(error));
+                                return res.status(200).send(tweets);
+                            }
+                        )
+                        .catch((error) => res.status(403).send(error));
 }
 
 exports.create = async(req, res) => {
@@ -121,6 +122,12 @@ exports.likeTweet = async (req, res) => {
     const tweetId = req.params.tweetId;
     const userId = req.body.userId;
 
+    const tweet = await Tweet.findByPk(tweetId);
+    await console.log("tweetId, userId", tweet.userId, userId );
+    
+    if(tweet.userId === parseInt(userId))
+        return res.status(400).json({ error:  "You cannot like your own tweet." });
+    
     return await Like.findOne(
                                 { 
                                     where: {

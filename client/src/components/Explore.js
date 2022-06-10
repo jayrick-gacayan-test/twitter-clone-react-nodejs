@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -72,6 +72,13 @@ const Explore = () => {
             element.target.classList.add("text-danger", "bi-heart-fill");
         }
     }
+
+    /* const tweetReducer = (state, action) => {
+        switch(action.type){
+            default: return state;
+        }
+    }
+    const [tweets, dispatch] = useReducer(tweetReducer, []); */
 
     return (
         <React.Fragment>

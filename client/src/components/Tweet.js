@@ -20,7 +20,7 @@ const Tweet = () => {
     const { tweetId } = useParams();
     let navigate = useNavigate();
     let location = useLocation();
-
+    console.log()
     const initialTweetInfo = {
         title: "",
         content: "",
@@ -39,6 +39,7 @@ const Tweet = () => {
             TweetService.getTweet(tweetId)
                 .then(
                     (response) => {
+                        console.log("response data --- ", response.data);
                         setTweet(response.data);
                         hasThereTweet(true);
                         setErrorText(null);
