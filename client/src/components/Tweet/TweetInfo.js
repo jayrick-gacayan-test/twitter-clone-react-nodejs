@@ -24,6 +24,7 @@ const TweetInfo = (props) => {
 
         props.handleDeleteTweet(id);
     }
+    
     return (
         thereTweet &&
         <React.Fragment>

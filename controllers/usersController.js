@@ -2,6 +2,7 @@
 const database = require("../models");
 const User = database.User;
 const Tweet = database.Tweet;
+const Follow = database.Follow;
 
 const Op = database.Sequelize.Op;
 const path = require("path");
@@ -46,9 +47,13 @@ exports.showAll = (req, res) => {
                                 ...userEmailCondition,
                                 include: [
                                     {
-                                        model: Tweet,
-                                        as: "tweets"
-                                    }
+                                        model: Follow,
+                                        as: "followers"
+                                    },
+                                    {
+                                        model: Follow,
+                                        as: "followings"
+                                    },
                                 ]
                             }
                         )
@@ -62,7 +67,7 @@ exports.showAll = (req, res) => {
                         .catch(error => res.status(400).send(error));
 }
 
-exports.update = async(req, res) => {
+exports.update = async (req, res) => {
     const fs = require("fs");
     const id = req.params.userId;
     let userImageName = null;
@@ -112,4 +117,47 @@ exports.update = async(req, res) => {
                         }
                     )
                     .catch((error) => { return res.status(400).send(error); }); 
+}
+
+exports.follow = async (req, res) => {
+    const followingId = req.params.followingId;
+    const userId = req.body.userId;
+
+    const updateFollowWhereClause = { 
+                                        where: {
+                                            [Op.and] : [
+                                                { follower: userId },
+                                                { following: followingId }
+                                            ]
+                                        }
+                                    };
+
+    if(followingId === userId) return res.status(400).send({ error: "You cannot follow your own account."});
+    
+    return await Follow.findOne(updateFollowWhereClause)
+                        .then(
+                            async (userFollow) => {
+                                if(!userFollow){
+                                    return await Follow.create(
+                                                            {
+                                                                isFollowed: true,
+                                                                follower: userId,
+                                                                following: followingId
+                                                            }
+                                                        )
+                                                        .then(
+                                                            (newUserFollow) => { return res.status(200).send(newUserFollow); }
+                                                        )
+                                                        .catch((error) => { return res.status(403).send(error); });
+                                }
+                                else{
+                                    return await userFollow.update(
+                                                            { isFollowed: !userFollow.isFollowed },
+                                                            updateFollowWhereClause)
+                                                        .then(() => { return res.status(201).send(userFollow); })
+                                                        .catch((error) => { return res.status(400).send(error); });
+                                }
+                            }
+                        )//checks if there is a follow on the where clause.
+                        .catch((error) => { return res.status(400).send(error); })
 }

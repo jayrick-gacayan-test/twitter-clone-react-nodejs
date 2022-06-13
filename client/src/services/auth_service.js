@@ -18,16 +18,13 @@ const login = (email, password) => {
     })
     .then(
         (response) => {
-            const { id, email, firstName, lastName, userImage, accessToken } = response.data;
+            const { id, email, accessToken } = response.data;
             if (response.data.accessToken) {
                 localStorage.setItem("user", 
                                         JSON.stringify(
                                             {
                                                 id, 
                                                 email,
-                                                firstName,
-                                                lastName,
-                                                userImage,
                                                 accessToken 
                                             }
                                         )

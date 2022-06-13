@@ -13,6 +13,7 @@ module.exports = app => {
 
     // like a tweet
     router.patch("/:tweetId/like",
+        [ authorizeJwt.verifyToken ],
         tweetsController.likeTweet);
 
     // getting specified tweet

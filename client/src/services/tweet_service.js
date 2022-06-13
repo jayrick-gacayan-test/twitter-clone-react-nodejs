@@ -51,9 +51,13 @@ const updateTweet = (id, title, content, userId) => {
 const likeTweet = (tweetId, userId) => {
 
     return axios.patch(API_URL + `${ tweetId }/like`, 
-            {
-                userId
-            });
+                        {
+                            userId
+                        },
+                        {
+                            headers: authHeader()
+                        }
+                    );
 }
 
 const TweetService = {
@@ -62,6 +66,7 @@ const TweetService = {
     getTweet,
     deleteTweet,
     updateTweet,
+    likeTweet,
     getTweets
 }
 

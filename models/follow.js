@@ -11,14 +11,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      Follow.belongsTo(models.User,
+        {
+          foreignKey: "follower",
+          as: "userFollowing"
+        });
+      
+      Follow.belongsTo(models.User, {
+        foreignKey: "following",
+        as: "userFollower"
+      });
     }
   }
   Follow.init({
-    follower: DataTypes.INTEGER,
-    following: DataTypes.INTEGER
+    isFollowed: DataTypes.BOOLEAN
   }, {
     sequelize,
+    timestamps: false,
+    tableName: 'follows',
     modelName: 'Follow',
   });
+
   return Follow;
 };

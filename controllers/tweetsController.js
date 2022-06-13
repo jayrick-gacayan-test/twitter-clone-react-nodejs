@@ -17,15 +17,16 @@ exports.show = (req, res) => {
                                         },
                                         {
                                             model: database.Like,
-                                            as: 'likes',
-                                            required: true
+                                            as: 'likes'
                                         }
-                                    ]   
+                                    ],
+                                    order: [
+                                        ["createdAt", "DESC"]
+                                    ] 
                                 }
                             )
                             .then(
                                 (tweet) => {
-                                    console.log("Tweet --- ", tweet);
                                     if(!tweet) return res.status(404).send({ error: "Tweet not found." });
 
                                     return res.status(200).send(tweet);
@@ -57,7 +58,10 @@ exports.showAll = (req, res) => {
                                             model: Like, 
                                             as: "likes",
                                         }
-                                    ]
+                                    ],
+                            order: [
+                                ["createdAt", "DESC"]
+                            ]
                         })
                         .then(
                             (tweets) => {
@@ -72,7 +76,24 @@ exports.showAll = (req, res) => {
 exports.create = async(req, res) => {
     const { title, content, userId } = req.body;
     return await Tweet.create({ title, content, userId }, {})
-        .then((newTweet) => Tweet.findByPk(newTweet.id, {}))
+        .then(
+            async (newTweet) => { 
+                return await Tweet.findByPk(newTweet.id, 
+                                        {
+                                            include: [
+                                                {
+                                                    model: database.User,
+                                                    as: 'user',
+                                                },
+                                                {
+                                                    model: database.Like,
+                                                    as: 'likes'
+                                                }
+                                            ]
+                                        }
+                                    );
+            }
+        )
         .then((newTweet) => {
             return res.status(201).send(newTweet);
         })
@@ -123,42 +144,33 @@ exports.likeTweet = async (req, res) => {
     const userId = req.body.userId;
 
     const tweet = await Tweet.findByPk(tweetId);
-    await console.log("tweetId, userId", tweet.userId, userId );
-    
-    if(tweet.userId === parseInt(userId))
-        return res.status(400).json({ error:  "You cannot like your own tweet." });
-    
-    return await Like.findOne(
-                                { 
+
+    const updateLikeWhereClause = { 
                                     where: {
                                         [Op.and] : [
                                             { tweetId: tweetId },
                                             { userId: userId }
                                         ]
                                     }
-                                }
-                            )
+                                };
+    
+    if(tweet.userId === parseInt(userId))
+        return res.status(400).json({ error:  "You cannot like your own tweet." });
+    
+    return await Like.findOne(updateLikeWhereClause)
                         .then(
-                            (tweetLike) => {
+                            async (tweetLike) => {
                                 if(!tweetLike)
-                                    return Like.create({ isLiked: true, tweetId, userId})
+                                    return await Like.create({ isLiked: true, tweetId, userId})
                                                     .then((likeTweet) => { return res.status(200).send(likeTweet); })
                                                     .catch((error) => res.status(400).send(error));
                                 else{
-                                    tweetLike.update({ isLiked: !tweetLike.isLiked },
-                                                        {
-                                                            where: {
-                                                                [Op.and] : [
-                                                                    { tweetId: tweetId },
-                                                                    { userId: userId }
-                                                                ]
-                                                            }
-                                                        }
-                                                    )
-                                                    .then(() => { return res.status(201).json(tweetLike); })
-                                                    .catch((error) => { return res.status(400).json(error) });
+                                    return await tweetLike.update({ isLiked: !tweetLike.isLiked },
+                                                                updateLikeWhereClause)
+                                                        .then(() => { return res.status(201).json(tweetLike); })
+                                                        .catch((error) => { return res.status(400).json(error) });
                                 }
                             }
-                        )
+                        )// checks if there is a like tweet from a specific user;
                         .catch((error) => { return res.status(400).send(error) });
 }

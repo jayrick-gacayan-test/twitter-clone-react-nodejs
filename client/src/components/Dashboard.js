@@ -15,12 +15,7 @@ import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
 const Dashboard = () => {
-    const { id, 
-            email, 
-            firstName, 
-            lastName, 
-            userImage 
-        } = AuthService.getCurrentUser();
+    const { id } = AuthService.getCurrentUser();
     
     const initialTweet = {
             userId: id,
@@ -31,15 +26,7 @@ const Dashboard = () => {
     const [tweet, setTweet] = useState(initialTweet);
     const [allTweet, setAllTweet] = useState([]);
     
-    const user = {
-        user : {
-            email, 
-            firstName, 
-            lastName,
-            userImage
-        }
-    };
-
+    
     useEffect(
         () => {
             fetchUserTweets(id);
@@ -73,8 +60,8 @@ const Dashboard = () => {
         TweetService.createTweet(userId, title, content)
             .then(
                 (response) => {
-                    const tweetData = { ...response.data, ...user };
-                    setAllTweet([...allTweet, tweetData]);
+                    
+                    setAllTweet([...allTweet, response.data]);
                     setTweet(initialTweet);
                 },
                 (error) => {
@@ -95,23 +82,6 @@ const Dashboard = () => {
                     
                 }
             );
-    }
-
-    
-    const handleLikeTweet = (element) => {
-        console.log("This ---- ", element);
-        
-        const checkClassName = element.target.classList.contains("bi-heart-fill");
-
-        if(checkClassName)
-        {
-            element.target.classList.remove("text-danger", "bi-heart-fill");
-            element.target.classList.add("bi-heart");
-        }
-        else{
-            element.target.classList.remove("bi-heart");
-            element.target.classList.add("text-danger", "bi-heart-fill");
-        }
     }
 
     return (
@@ -157,8 +127,7 @@ const Dashboard = () => {
                     <div className="container-fluid g-0">
                         {
                             allTweet.length > 0 && 
-                            <TweetList tweets={ allTweet }
-                            handleLikeTweet={ handleLikeTweet } />
+                            <TweetList tweets={ allTweet } />
                         }
                     </div>
                 </main>

@@ -8,11 +8,26 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      isFollowed: {
+        type: Sequelize.BOOLEAN,  
+        allowNull: false,
+        defaultValue: false
+      },
       follower: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+          as: "follower"
+        }
       },
       following: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+          as: "following"
+        }
       },
     },
     {

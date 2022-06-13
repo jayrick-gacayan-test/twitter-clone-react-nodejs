@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -15,8 +15,6 @@ import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
 const Explore = () => {
-    //const { id, email, firstName, lastName } = AuthService.getCurrentUser();
-    
     const [containerData, setContainerData] = useState([]);
 
     useEffect(
@@ -58,28 +56,6 @@ const Explore = () => {
             );
     }
 
-    const handleLikeTweet = (element) => {
-        
-        const checkClassName = element.target.classList.contains("bi-heart-fill");
-
-        if(checkClassName)
-        {
-            element.target.classList.remove("text-danger", "bi-heart-fill");
-            element.target.classList.add("bi-heart");
-        }
-        else{
-            element.target.classList.remove("bi-heart");
-            element.target.classList.add("text-danger", "bi-heart-fill");
-        }
-    }
-
-    /* const tweetReducer = (state, action) => {
-        switch(action.type){
-            default: return state;
-        }
-    }
-    const [tweets, dispatch] = useReducer(tweetReducer, []); */
-
     return (
         <React.Fragment>
             <div className="container-fluid row g-0">
@@ -90,8 +66,7 @@ const Explore = () => {
                     <div className="container-fluid g-0 mt-3">
                         {
                             containerData.length > 0 &&
-                            <TweetList tweets={ containerData }
-                                handleLlkeTweet={ handleLikeTweet } />
+                            <TweetList tweets={ containerData }/>
                         }
                     </div>
                 </main>

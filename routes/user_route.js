@@ -1,17 +1,25 @@
 const usersController = require("../controllers").users;
 const { authorizeJwt } = require("../middlewares");
+const router = require('express').Router();
 module.exports = (app) => {
     
+    app.use("/api/users", router);
+    
     // get users by id
-    app.get("/api/users/:userId", 
+    router.get("/:userId", 
         usersController.show);
 
     // get all users
-    app.get("/api/users/",
+    router.get("/",
         usersController.showAll);
 
     // update user profile
-    app.put("/api/users/:userId", 
+    router.put("/:userId", 
             [ authorizeJwt.verifyToken ],
             usersController.update);
+
+    // follow user
+    router.patch("/:followingId/follow",
+            [ authorizeJwt.verifyToken ],
+            usersController.follow);
 }

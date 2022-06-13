@@ -1,12 +1,15 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+/* services */ 
 import AuthService from "../../services/auth_service";
+import TweetService from "../../services/tweet_service";
+
+/* utilities and helpers */
 import ModalUtility from "../../utilities/modal_utility";
 const fileImageBaseUrl = "http://localhost:3001/files";
 
 const TweetItem = (props) => {
-    let location = useLocation();
     let navigate = useNavigate();
     const { tweet } = props;
     
@@ -16,9 +19,79 @@ const TweetItem = (props) => {
     const tweetLastName = tweet.user.lastName || "";  
     const tweetName = `${ tweetFirstName } ${ tweetLastName }`;
     
+    const [tweetLikes, setTweetLikes] = useState(tweet.likes);
+   
+    const [liked, setLiked] = useState(
+        !AuthService.getCurrentUser() ? false : 
+        ((tweetLikes.filter(
+                        (like) => 
+                        {
+                            return AuthService.getCurrentUser() && 
+                                (like.userId === AuthService.getCurrentUser().id); 
+                        }
+                    ))
+                .length > 0 ? true: false)
+    );
+    
+    const [likesCount, setLikesCount] = useState(
+                        (tweetLikes.filter((like) => { return like.isLiked; })).length
+                    );
+    
     const openDeleteTweetModal = () => {
         const modalDeleteTweet = document.getElementById('modalDeleteTweet');
         ModalUtility.showModal(modalDeleteTweet);
+    }
+
+    const handleLikeTweet = (tweetId) => {
+
+        if(!AuthService.getCurrentUser())
+        {    
+            alert("You must login first.");
+            return;
+        }    
+        
+        TweetService.likeTweet(tweetId, AuthService.getCurrentUser().id)
+            .then(
+                (response) => {
+                    console.log("Data ---- ", response.data);
+                    
+                    const likeTweetByUser = tweetLikes.filter(
+                        (like) => { 
+                            return like.userId === AuthService.getCurrentUser().id; 
+                        }
+                    );
+
+                    setTweetLikes(
+                        (likeTweetByUser.length < 1) ?
+                        [ ...tweetLikes, response.data ] :
+                        tweetLikes.map(
+                            (like) => {
+                                if(like.userId === AuthService.getCurrentUser().id)
+                                    return { ...like, isLiked: response.data.isLiked }
+
+                                return like;
+                            }
+                        )
+                    );
+
+                    setLiked(response.data.isLiked);
+                    setLikesCount(
+                        (likesCount) => {
+                            return liked ? likesCount - 1 : likesCount + 1;
+                        }
+                    );
+                },
+                (error) => {
+                    const resMessage =
+                            (error.response &&
+                            error.response.data &&
+                            error.response.data.error) ||
+                            error.message ||
+                            error.toString() || error;
+
+                    alert(resMessage);
+                }
+            );
     }
 
     return (
@@ -60,7 +133,7 @@ const TweetItem = (props) => {
                             </div>
                             {
                                 ( AuthService.getCurrentUser() &&
-                                location.pathname === `/tweets/${ tweet.id }`) &&
+                                tweet.userId === AuthService.getCurrentUser().id) &&
                                 (
                                     <div>
                                         <div className="dropdown">
@@ -104,18 +177,12 @@ const TweetItem = (props) => {
                     <div className="d-flex justify-content-between">
                         <div >
                             <span>
-                                <i className="me-1 bi bi-hand-thumbs-up"
-                                    onClick={
-                                        () => {
-                                            if(AuthService.getCurrentUser())
-                                            {
-                                                if(tweet.userId === AuthService.getCurrentUser().id)
-                                                    alert("You can't like your own tweet");
-                                                else
-                                                    alert("thanks ---");
-                                            }
-                                        }    
-                                    }></i>
+                                <i className={ `me-1 bi bi-hand-thumbs-up${ liked ? `-fill text-info` : ``}`}
+                                    onClick={ () => handleLikeTweet(tweet.id) }></i>
+                                {
+                                    likesCount > 0 &&
+                                    <span>{ likesCount }</span>
+                                }
                             </span>
                             
                         </div>
