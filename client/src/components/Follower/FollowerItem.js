@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 
+/* components */
+import Avatar from '../layouts/Avatar';
+
 /* services */
 import AuthService from '../../services/auth_service';
 import UserService from '../../services/user_service';
 
+import '../custom.style.css';
 const fileImageBaseUrl = "http://localhost:3001/files";
 const FollowerItem = (props) => {
 
@@ -36,7 +40,6 @@ const FollowerItem = (props) => {
         UserService.followUser(followingId, AuthService.getCurrentUser().id)
                 .then(
                     (response) => {
-                        console.log("Data ---- ", response.data);
 
                         const followUser = userFollowers.filter(
                             (follow) => {
@@ -79,24 +82,17 @@ const FollowerItem = (props) => {
 
     return (
         <li className="list-group-item d-flex bg-light">
-            <div className="me-2 flex-shrink-1">
-                <img src={ `${ fileImageBaseUrl }/profile/${user.userImage}`}
-                    alt={`${ user.firstName }-pic`}
-                    className="rounded-circle d-inline-block"
-                    style={{
-                        width: "60px",
-                        height: "60px",
-                        maxWidth: "60px",
-                        maxHeight: "60px",
-                    }}/> 
-            </div>
+            <Avatar divClassName={ `me-2 flex-shrink-1` }
+                    imgSrc={ `${ fileImageBaseUrl }/profile/${ user.userImage }` } 
+                    imgAlt={ `${ user.firstName }-pic` }
+                    imgAvatarSize="avatar-img-size-1"
+                    />
             <div className="flex-grow-1 bg-light d-flex flex-column flex-xxl-row justify-content-between">
-                <div className="d-flex justify-content-center flex-column text-break ">
+                <div className="d-flex justify-content-center flex-column text-break">
                     <p className="fw-bold">{ user.firstName } { user.lastName } 
-                        <a className="text-secondary d-block text-decoration-none text-wrap" 
+                        <a className="fw-normal fs-6 text-black-50 d-block text-wrap" 
                             href={`/profile/${ user.id }`}>@{ user.email }</a> 
-                        <span className="fw-normal d-block text-break">Followers : { followsCount }</span> 
-                        <span className="fw-normal d-block text-break">Following : { user.followings.length }</span>    
+                        <span className="fw-normal d-block text-break follow-font-size-1">{ followsCount } Followers { user.followings.length } Following</span> 
                     </p>
                 </div>
                 <div className="d-flex flex-column justify-content-center">

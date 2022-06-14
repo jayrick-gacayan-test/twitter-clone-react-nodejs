@@ -234,28 +234,16 @@ const RegisterPage = () => {
 
             {   
                 <Modal idModal="successModal"
-                    ariaLabel="Register Success">
-                        {
-                            successful && 
-                            (
-                                <div className="modal-confirm">
-                                    <div className="modal-header justify-content-center">
-                                        <div className="icon-box d-flex justify-content-center">
-                                            <i className="bi bi-check-lg"></i>
-                                        </div>
-                                    </div>
-                                    <div className="modal-body text-center">
-                                        <h4>Great!</h4>	
-                                        <p>{ message }</p>
-                                        <button className="btn rounded-pill btn-warning text-white"
-                                        onClick={ closeModalSuccess }>
-                                            <span className="me-2">Start Login </span> 
-                                            <i className="bi bi-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            )
-                        }
+                    ariaLabel="Register Success"
+                    confirmType="modal-success-confirm"
+                    icon="bi-check-lg"
+                    h4Text="Great!"
+                    pText={ message }>
+                    <button className="btn rounded-pill btn-warning text-white"
+                    onClick={ closeModalSuccess }>
+                        <span className="me-2">Start Login </span> 
+                        <i className="bi bi-arrow-right"></i>
+                    </button>
                 </Modal>
             }
         </div>

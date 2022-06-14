@@ -7,6 +7,7 @@ import TweetService from "../../services/tweet_service";
 
 /* utilities and helpers */
 import ModalUtility from "../../utilities/modal_utility";
+import Avatar from "../layouts/Avatar";
 const fileImageBaseUrl = "http://localhost:3001/files";
 
 const TweetItem = (props) => {
@@ -96,18 +97,11 @@ const TweetItem = (props) => {
 
     return (
         <React.Fragment>
-            <div className="d-flex">
-                <div className="ms-3">
-                    <img src={ `${ fileImageBaseUrl }/profile/${ tweet.user.userImage }`}
-                        alt={ `${ tweetFirstName }-pic` }
-                        className="rounded-circle d-inline-block"
-                        style={{
-                            width: "60px",
-                            height: "60px",
-                            maxWidth: "60px",
-                            maxHeight: "60px",
-                        }}/>                   
-                </div>
+            <div className="d-flex mb-2">
+                <Avatar divClassName={ `ms-3` }
+                        imgSrc={ `${ fileImageBaseUrl }/profile/${ tweet.user.userImage }` }
+                        imgAlt={ `${ tweetFirstName }-pic` }
+                        imgAvatarSize="avatar-img-size-1"  />
                 <div className="flex-grow-1 px-3">
                     <div
                         className="d-block text-decoration-none text-dark"
@@ -174,21 +168,55 @@ const TweetItem = (props) => {
                             <p>{ tweet.content }</p>
                         </div>
                     </div>
-                    <div className="d-flex justify-content-between">
-                        <div >
-                            <span>
-                                <i className={ `me-1 bi bi-hand-thumbs-up${ liked ? `-fill text-info` : ``}`}
-                                    onClick={ () => handleLikeTweet(tweet.id) }></i>
-                                {
-                                    likesCount > 0 &&
-                                    <span>{ likesCount }</span>
-                                }
-                            </span>
-                            
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
+            <div className="d-flex justify-content-evenly mb-2 px-2">
+                <div>
+                    <span>
+                        <i className={ `me-1 bi bi-hand-thumbs-up${ liked ? `-fill text-info` : ``}`}
+                            onClick={ () => handleLikeTweet(tweet.id) }></i>
+                        { likesCount > 0 && <span>{ likesCount }</span> }
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <i className="bi bi-chat-dots"></i>
+                    </span>
+                </div>
+            </div>
+            {
+                tweet.comments.length > 0 &&
+                <div className="d-flex flex-column justify-content-center">
+                    <div className="d-flex flex-grow-1">Comments</div>
+                    {
+                        tweet.comments.map(
+                            (comment) => {
+                                const commenterFirstName = comment.commenter.firstName || "";
+                                const commenterLastName = comment.commenter.lastName || "";
+                                
+                                return (
+                                    <div key={ comment.id } 
+                                        className="d-flex">
+                                        <Avatar divClassName={ `ms-3` }
+                                        imgSrc={ `${ fileImageBaseUrl }/profile/${ comment.commenter.userImage }` }
+                                        imgAlt={ `${ commenterFirstName }-pic` }
+                                        imgAvatarSize="avatar-img-size-2"  />
+                                        <div className="flex-grow-1 px-3 flex-column">
+                                            <div>
+                                                <p>{ commenterFirstName } { commenterLastName }</p>
+                                            </div>
+                                            <div>
+                                                { comment.text }
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        )
+                    }
+                </div>
+            }
             <hr />
         </React.Fragment>
     )

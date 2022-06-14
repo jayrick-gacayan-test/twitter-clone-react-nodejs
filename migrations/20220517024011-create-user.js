@@ -40,6 +40,8 @@ module.exports = {
         allowNull: true,
         defaultValue: "defaultImage.png"
       }
+    },{
+      timestamps: true
     });
   },
   async down(queryInterface, Sequelize) {

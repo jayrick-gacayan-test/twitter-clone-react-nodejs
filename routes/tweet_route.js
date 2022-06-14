@@ -6,6 +6,10 @@ module.exports = app => {
     
     app.use("/api/tweets", router);
 
+    // get all tweets
+    router.get("/",
+        tweetsController.showAll);
+    
     // create tweet
     router.post("/create",
         [ authorizeJwt.verifyToken ],
@@ -20,11 +24,6 @@ module.exports = app => {
     router.get("/:tweetId",
         tweetsController.show);
     
-    // getting all tweets
-    router.get("/",
-        tweetsController.showAll
-    );
-
     // deleting tweet
     router.delete("/:tweetId",
         [ authorizeJwt.verifyToken ],
@@ -34,4 +33,9 @@ module.exports = app => {
     router.put("/:tweetId",
         [ authorizeJwt.verifyToken ],
         tweetsController.update);
+
+    // tweetComment
+    router.post("/:tweetId/comment",
+        [ authorizeJwt.verifyToken ],
+        tweetsController.commentTweet);
 }

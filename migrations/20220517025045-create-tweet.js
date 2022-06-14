@@ -32,6 +32,8 @@ module.exports = {
           as: "userId"
         }
       }
+    },{
+      timestamps: true
     });
   },
   async down(queryInterface, Sequelize) {

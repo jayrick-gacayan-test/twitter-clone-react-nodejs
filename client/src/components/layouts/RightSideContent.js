@@ -1,29 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import UserService from "../../services/user_service";
 
+/* Components */
 import FollowerList from "../Follower/FollowerList";
+import Loader from "./Loader";
 
+/* Services */
+import UserService from "../../services/user_service";
 
 const RightSideContent = () => {
     let navigate = useNavigate();
+
     const [users, setUsers] = useState([]);
     const [searchText, setSearchText] = useState("");
+    const [loading, isLoading] = useState(false);
 
     const [searchParams] = useSearchParams();
     let query = searchParams.get("email");
 
     useEffect(
-        () =>
-        {
-            fetchAllUsers();
+        () => {
+            isLoading(true);
 
-            if(query !== null)
-                setSearchText(query);
-            else
-                setSearchText(""); 
+            const fetchAllUsersTimeout = setTimeout(() => {
+                fetchAllUsers();
+                isLoading(false);
+            }, 2000);
+
+            setSearchText(query !== null ? query: "");
+            
+            return () => {
+                clearTimeout(fetchAllUsersTimeout);
+            }
         }
-        ,[query]
+        ,[ query ]
     );
 
     const fetchAllUsers = () => {
@@ -79,14 +89,22 @@ const RightSideContent = () => {
             </div>
             {
                 <div className="card bg-light mb-3 rounded-3">
-                    <div className="card-header bg-light">
-                        <h5>Who to follow</h5>
-                    </div>
-                    <div className="card-body">
-                        <ul className="list-group list-group-flush d-flex">
-                            <FollowerList users={ users }/>
-                        </ul>
-                    </div>
+                    {
+                        loading ? (<Loader />) : 
+                        (
+                            <React.Fragment>
+                                <div className="card-header bg-light">
+                                    <h5>Who to follow</h5>
+                                </div>
+                                <div className="card-body">
+                                    <ul className="list-group list-group-flush d-flex">
+                                        <FollowerList users={ users }/>
+                                    </ul>
+                                </div>
+                            </React.Fragment>
+                        )
+                    }
+                    
                 </div>
             }
         </aside>

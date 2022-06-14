@@ -14,6 +14,7 @@ import AuthService from '../services/auth_service';
 /* utilities */
 import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
+import Loader from './layouts/Loader';
 
 const Tweet = () => {
     const { id } = AuthService.getCurrentUser();
@@ -30,15 +31,40 @@ const Tweet = () => {
     const [ tweet, setTweet ] = useState({});
     const [ thereTweet, hasThereTweet] = useState(false);
     const [ errorText, setErrorText ] = useState(null);
-
+    const [ loading, isLoading ] = useState(false);
     const [ currentTweet, setCurrentTweet ] = useState(initialTweetInfo);
 
     useEffect(
         () => {
-            TweetService.getTweet(tweetId)
+            isLoading(true);
+
+            const fetchCurrentTweetTimeout = setTimeout(() => {
+                fetchCurrentTweet(tweetId);
+                isLoading(false);
+            }, 2000);
+
+            const { innerWidth } = getScreenDimension();
+        
+            sidebarResponsive({ innerWidth });
+            
+            function handleResize(){
+                const { innerWidth } = getScreenDimension();
+                sidebarResponsive({ innerWidth });
+            }
+            window.addEventListener('resize', handleResize);
+
+            return () => {
+                clearTimeout(fetchCurrentTweetTimeout);
+                window.removeEventListener('resize', handleResize);
+            }
+        }
+        ,[ tweetId ]
+    );
+
+    const fetchCurrentTweet = (tweetId) => {
+        TweetService.getTweet(tweetId)
                 .then(
                     (response) => {
-                        console.log("response data --- ", response.data);
                         setTweet(response.data);
                         hasThereTweet(true);
                         setErrorText(null);
@@ -61,24 +87,9 @@ const Tweet = () => {
                         hasThereTweet(false);
                     }
                 );
-
-            const { innerWidth } = getScreenDimension();
-        
-            sidebarResponsive({ innerWidth });
-            
-            function handleResize(){
-                const { innerWidth } = getScreenDimension();
-                sidebarResponsive({ innerWidth });
-            }
-            window.addEventListener('resize', handleResize);
-
-            return () => window.removeEventListener('resize', handleResize);
-        }
-        ,[ tweetId ]
-    );
+    }
 
     const handleDeleteTweet = (tweetId) => {
-        console.log("Tweet id ---- ", tweetId);
         TweetService.deleteTweet(tweetId, id)
                     .then(
                         (response) => {
@@ -93,7 +104,7 @@ const Tweet = () => {
                                 error.message ||
                                 error.toString() || error; 
 
-                            console.log("Error ---- ", resMessage);
+                            alert(resMessage);
                         }
                     );
     }
@@ -115,7 +126,7 @@ const Tweet = () => {
                                 error.message ||
                                 error.toString() || error; 
 
-                            console.log("Error ---- ", resMessage);
+                            alert(resMessage);
                         }
                     );
     }
@@ -125,26 +136,33 @@ const Tweet = () => {
             <div className="container-fluid row g-0">
                 <LeftSideContent />
                 <main className="col-lg-6 offset-lg-3 g-0 border border-top-0 border-bottom-0">
-                    {
-                        errorText &&
-                        (
-                            <div className="container-fluid py-2 px-3">
-                                <div className="alert alert-danger">
-                                    { errorText }
-                                </div>
-                            </div>
-                        )
-                    }   
-                    {   
-                        tweet &&
-                        location.pathname === `/tweets/${ tweet.id }/edit` ?     
-                        <EditTweet tweet={ currentTweet } 
-                                thereTweet={ thereTweet }
-                                handleTweetUpdate={ handleTweetUpdate } /> :
-                        <TweetInfo tweet={ tweet }
-                            thereTweet={ thereTweet }
-                            handleDeleteTweet={ handleDeleteTweet }/>
-                    }
+                {
+                    loading ? (<Loader />) :
+                    (
+                        <React.Fragment>
+                            {
+                                errorText &&
+                                (
+                                    <div className="container-fluid py-2 px-3">
+                                        <div className="alert alert-danger">
+                                            { errorText }
+                                        </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                tweet &&
+                                location.pathname === `/tweets/${ tweet.id }/edit` ?     
+                                <EditTweet tweet={ currentTweet } 
+                                        thereTweet={ thereTweet }
+                                        handleTweetUpdate={ handleTweetUpdate } /> :
+                                <TweetInfo tweet={ tweet }
+                                    thereTweet={ thereTweet }
+                                    handleDeleteTweet={ handleDeleteTweet }/>
+                            }
+                        </React.Fragment>
+                    )
+                }
                 </main>
                 <RightSideContent />
             </div>

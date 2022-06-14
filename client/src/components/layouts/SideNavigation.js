@@ -72,10 +72,6 @@ const SideNavigation = ({ userId }) => {
                     </ul>
                 </div>
             </nav>
-            <div className="my-2">
-                <button type="button" 
-                    className="btn btn-info text-white btn-lg w-100 rounded-pill">Tweet</button>
-            </div>
         </div>
     );
 }

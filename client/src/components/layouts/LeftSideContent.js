@@ -59,30 +59,23 @@ const LeftSideContent = () => {
                 </div>
             </nav>
             <Modal idModal="modalLogout"
-                ariaLabel="Account Logout">
-                <div className="modal-danger-confirm">
-                    <div className="modal-header justify-content-center">
-                        <div className="icon-box d-flex justify-content-center">
-                            <i className="bi bi-x-lg"></i>
-                        </div>
+                ariaLabel="Account Logout"
+                confirmType="modal-danger-confirm"
+                icon="bi-x-lg"
+                h4Text="Ooops!"
+                pText={ `Are you sure you want to log-out?` }>
+                <div className="d-flex justify-content-around">
+                    <div className="flex-fill p-1">
+                        <button className="btn btn-info rounded-pill text-white w-100"
+                            onClick={ closeNotToLogout }>
+                            Cancel
+                        </button>
                     </div>
-                    <div className="modal-body text-center">
-                        <h4>Ooops!</h4>	
-                        <p>Are you sure you want to log-out ?</p>
-                        <div className="d-flex justify-content-around">
-                            <div className="flex-fill p-1">
-                                <button className="btn btn-info rounded-pill text-white w-100"
-                                    onClick={ closeNotToLogout }>
-                                    Cancel
-                                </button>
-                            </div>
-                            <div className="flex-fill p-1">
-                                <button className="btn btn-danger rounded-pill text-white w-100"
-                                    onClick={ logOut }>
-                                    Logout
-                                </button>
-                            </div>
-                        </div>
+                    <div className="flex-fill p-1">
+                        <button className="btn btn-danger rounded-pill text-white w-100"
+                            onClick={ logOut }>
+                            Logout
+                        </button>
                     </div>
                 </div>
             </Modal>

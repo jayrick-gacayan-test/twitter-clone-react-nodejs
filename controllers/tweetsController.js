@@ -4,6 +4,7 @@ const database = require('../models');
 const Tweet = database.Tweet;
 const User = database.User;
 const Like = database.Like;
+const Comment = database.Comment;
 
 const Op = database.Sequelize.Op;
 
@@ -14,14 +15,34 @@ exports.show = (req, res) => {
                                         {
                                             model: database.User,
                                             as: 'user',
+                                            attributes: ["id", "email", "firstName", "lastName", "userImage"]
                                         },
                                         {
                                             model: database.Like,
                                             as: 'likes'
+                                        },
+                                        {
+                                            model: database.Comment,
+                                            as: "comments",
+                                            include: [
+                                                {
+                                                    model: database.User,
+                                                    as: "commenter",
+                                                    attributes: ["id", "email", "firstName", "lastName", "userImage"]
+                                                }
+                                            ]
                                         }
                                     ],
                                     order: [
-                                        ["createdAt", "DESC"]
+                                        [ "createdAt", "DESC" ], // model Tweet
+                                        [
+                                            { 
+                                                model: database.Comment,
+                                                as: "comments"
+                                            }, 
+                                            'createdAt', 
+                                            'DESC'
+                                        ], // for the model comment
                                     ] 
                                 }
                             )
@@ -40,28 +61,45 @@ exports.showAll = (req, res) => {
     const { userId } = req.query;
     const userInclude = {
         model: User,
-        as: "user"
+        as: "user",
+        attributes: [ "email", "firstName", "lastName", "userImage" ]
     }
 
     const tweetCondition = userId ? {
         ...userInclude, 
-        attributes: [ "email", "firstName", "lastName", "userImage" ],
-            where: {
-                id: userId
-            }
+        where: { id: userId }
     }: userInclude;
 
     return Tweet.findAll({
                             include: [ 
                                         tweetCondition, 
                                         { 
-                                            model: Like, 
+                                            model: database.Like, 
                                             as: "likes",
+                                        },
+                                        {
+                                            model: database.Comment,
+                                            as: "comments",
+                                            include: [
+                                                {
+                                                    model: database.User,
+                                                    as: "commenter",
+                                                    attributes: ["id", "email", "firstName", "lastName", "userImage"]
+                                                }
+                                            ]
                                         }
                                     ],
                             order: [
-                                ["createdAt", "DESC"]
-                            ]
+                                [ "createdAt", "DESC" ], // model Tweet
+                                [
+                                    { 
+                                        model: database.Comment,
+                                        as: "comments"
+                                    }, 
+                                    'createdAt', 
+                                    'DESC'
+                                ], // for the model comment
+                            ] 
                         })
                         .then(
                             (tweets) => {
@@ -88,6 +126,10 @@ exports.create = async(req, res) => {
                                                 {
                                                     model: database.Like,
                                                     as: 'likes'
+                                                },
+                                                {
+                                                    model: database.Comment,
+                                                    as: "comments"
                                                 }
                                             ]
                                         }
@@ -173,4 +215,13 @@ exports.likeTweet = async (req, res) => {
                             }
                         )// checks if there is a like tweet from a specific user;
                         .catch((error) => { return res.status(400).send(error) });
+}
+
+exports.commentTweet = async (req, res) => {
+    const tweetId = req.params.tweetId;
+    const { text, userId } = req.body;
+    
+    return await Comment.create({ text, tweetId, userId })
+                        .then((newComment) => { return res.status(200).send(newComment); })
+                        .catch((error) => { return res.status(400).send(error); });
 }

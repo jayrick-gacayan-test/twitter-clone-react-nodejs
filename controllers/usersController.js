@@ -14,8 +14,19 @@ exports.show = (req, res) => {
                         {
                             model: Tweet,
                             as: "tweets"
-                        }
-                    ]
+                        },
+                        {
+                            model: Follow,
+                            as: "followers"
+                        },
+                        {
+                            model: Follow,
+                            as: "followings"
+                        },
+                    ],
+                    attributes: {
+                        exclude: ["password"]
+                    }
                 }
             )
             .then(
@@ -54,7 +65,10 @@ exports.showAll = (req, res) => {
                                         model: Follow,
                                         as: "followings"
                                     },
-                                ]
+                                ],
+                                attributes: {
+                                    exclude: ["password"]
+                                }
                             }
                         )
                         .then(
@@ -72,8 +86,6 @@ exports.update = async (req, res) => {
     const id = req.params.userId;
     let userImageName = null;
 
-    console.log("Request body --- ", req.body);
-    
     if(req.files && req.files.userImage)
     {
         const userImage = req.files.userImage;
@@ -90,7 +102,6 @@ exports.update = async (req, res) => {
                 if(error) return res.status(403).json(error);
             }
         );
- 
     }
 
     const userName = {

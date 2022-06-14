@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "tweetId",
         as: "likes"
       });
+
+      Tweet.hasMany(models.Comment, {
+        foreignKey: "tweetId",
+        as: "comments"
+      });
     }
   }
   Tweet.init({

@@ -5,6 +5,7 @@ import LeftSideContent from './layouts/LeftSideContent';
 import RightSideContent from './layouts/RightSideContent';
 import TopMostContent from './layouts/TopMostContent';
 import TweetList from './Tweet/TweetList';
+import Loader from './layouts/Loader';
 
 /* Services */
 import AuthService from '../services/auth_service';
@@ -25,10 +26,18 @@ const Dashboard = () => {
     
     const [tweet, setTweet] = useState(initialTweet);
     const [allTweet, setAllTweet] = useState([]);
-    
+    const [loading, isLoading] = useState(false);
     
     useEffect(
         () => {
+            isLoading(true);
+
+            const fetchUserTweetTimeout = setTimeout(() => {
+                fetchUserTweets(id);
+                isLoading(false);    
+            }, 2000);
+
+
             fetchUserTweets(id);
             const { innerWidth } = getScreenDimension();
             
@@ -40,7 +49,10 @@ const Dashboard = () => {
             }
             window.addEventListener('resize', handleResize);
 
-            return () => window.removeEventListener('resize', handleResize);
+            return () => {
+                clearTimeout(fetchUserTweetTimeout);
+                window.removeEventListener('resize', handleResize);
+            }
         }, []
     );
     
@@ -126,8 +138,9 @@ const Dashboard = () => {
                     <hr />
                     <div className="container-fluid g-0">
                         {
-                            allTweet.length > 0 && 
-                            <TweetList tweets={ allTweet } />
+                            loading ? (<Loader />) :
+                            (allTweet.length > 0 && 
+                            <TweetList tweets={ allTweet } />)
                         }
                     </div>
                 </main>

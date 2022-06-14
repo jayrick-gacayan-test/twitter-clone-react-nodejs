@@ -11,10 +11,12 @@ import ProfileInfo from './Profile/ProfileInfo';
 /* services */
 import UserService from '../services/user_service';
 import AuthService from '../services/auth_service';
+import Loader from './layouts/Loader';
 
 /* utilities */
 import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
+
 
 const Profile = () => {
     //const { id } = AuthService.getCurrentUser();
@@ -25,6 +27,7 @@ const Profile = () => {
     const [ user, setUser ] = useState({});
     const [ thereUser, hasThereUser ] = useState(false);
     const [ errorText, setErrorText ] = useState(null);
+    const [ loading, isLoading ] = useState(false);
 
     const [ currentUser, setCurrentUser ] = useState({
         firstName: "",
@@ -34,6 +37,13 @@ const Profile = () => {
 
     useEffect(
         () => {
+            isLoading(true);
+
+            const fetchCurrentUserTimeout = setTimeout(() => {
+                fetchCurrentUser(userId);
+                isLoading(false);
+            }, 2000);
+
             const { innerWidth } = getScreenDimension();
             
             sidebarResponsive({ innerWidth });
@@ -44,9 +54,19 @@ const Profile = () => {
             }
             window.addEventListener('resize', handleResize);
 
-            UserService.getUser(userId)
+            return () => {
+                clearTimeout(fetchCurrentUserTimeout);
+                window.removeEventListener('resize', handleResize);
+            }
+        }
+        ,[ userId ]
+    );
+    
+    const fetchCurrentUser = (userId) => {
+        UserService.getUser(userId)
                 .then(
                     (response) =>{
+                        
                         setUser(response.data);
                         hasThereUser(true);
                         setErrorText(null);
@@ -82,12 +102,7 @@ const Profile = () => {
                         hasThereUser(false);
                     }
                 );
-            
-            return () => window.removeEventListener('resize', handleResize);
-        }
-        ,[ userId ]
-    );
-
+    }
     const handleUserUpdate = (user) => {
         const { firstName, lastName, userImage } = user;
         
@@ -106,7 +121,7 @@ const Profile = () => {
                         error.message ||
                         error.toString() || error; 
 
-                    console.log("Error ---- ", resMessage);
+                    alert(resMessage);
                 }
             )
           
@@ -119,25 +134,33 @@ const Profile = () => {
                 <LeftSideContent />
                 <main className="col-lg-6 offset-lg-3 g-0 border border-top-0 border-bottom-0">
                     {
-                        errorText &&
+                        loading ? (<Loader />) :
                         (
-                            <div className="container-fluid py-2 px-3">
-                                <div className="alert alert-danger">
-                                    { errorText }
-                                </div>
-                            </div>
+                            <React.Fragment>
+                            {
+                                    errorText &&
+                                    <div className="container-fluid py-2 px-3">
+                                        <div className="alert alert-danger">
+                                            { errorText }
+                                        </div>
+                                    </div>
+                            }
+                            {
+                                user &&
+                                location.pathname === `/profile/${ userId }/edit` ? 
+                                <EditProfile user={ currentUser } 
+                                            thereUser={ thereUser }
+                                            handleUserUpdate={ handleUserUpdate } /> :
+                                <ProfileInfo user={ user } 
+                                            thereUser={ thereUser } />
+                            }
+                                <hr/>
+                            </React.Fragment>
                         )
                     }
-                    {
-                        user &&
-                        location.pathname === `/profile/${ userId }/edit` ? 
-                        <EditProfile user={ currentUser } 
-                                    thereUser={ thereUser }
-                                    handleUserUpdate={ handleUserUpdate } /> :
-                        <ProfileInfo user={ user } 
-                                    thereUser={ thereUser } />
-                    }
-                    <hr/>
+                    
+                    
+                    
                 </main>
                 <RightSideContent />
             </div>

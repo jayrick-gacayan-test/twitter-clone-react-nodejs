@@ -67,9 +67,9 @@ const ProfileInfo = ({ user, thereUser }) => {
             </div>
             <div className="container-fluid py-3 px-3 mt-5">
                 <p className="font-weight-bold mt-3">
-                    <span className="fs-5 me-1 text-dark fw-bold">{ `${ firstName } ${ lastName }`}</span>
-                    <span className="lead fs-5 align-baseline">@ { user.email }</span>
-                    <span className="d-block">
+                    <span className="fs-5 text-dark fw-bold d-block">{ `${ firstName } ${ lastName }`}</span>
+                    <span className="fs-6 d-block text-black-50 text-decoration-underline">@ { user.email }</span>
+                    <span className="d-block fs-6">
                         <i className="bi bi-calendar-fill me-1"></i>
                         Joined { " " }
                         { user && joinedAt.toLocaleString("default", { month: "long" }) } { " " }
@@ -77,8 +77,7 @@ const ProfileInfo = ({ user, thereUser }) => {
                     </span>
                 </p>
                 <p className="font-weight-bold mt-3">
-                    <span className="px-2">Followers</span>
-                    <span className="px-2">Following</span>
+                    <span className="px-2 d-block follow-font-size-1 text-black-50">{ user.followers.length } Followers { user.followings.length } Following</span>
                 </p>  
             </div>
         </React.Fragment>

@@ -16,8 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Tweet, {
         as: 'tweets',
         foreignKey: 'userId',
-      });
+      }); //relationship to user to tweet
 
+      /* relationship of user to follow */
       User.hasMany(models.Follow, {
         as: "followers",
         foreignKey: "following"
@@ -26,7 +27,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Follow,{
         as: "followings",
         foreignKey: "follower"
-      })
+      });
+
+      
     }
 
     async hasEmail(){
