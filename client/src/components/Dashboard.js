@@ -65,9 +65,7 @@ const Dashboard = () => {
         event.preventDefault();
         const { userId, title, content } = tweet;
 
-        if(!title.trim() || !content.trim() ) {
-            return;
-        }
+        if(!title.trim() || !content.trim()) return;
 
         TweetService.createTweet(userId, title, content)
             .then(

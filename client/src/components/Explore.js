@@ -15,7 +15,6 @@ import TweetService from '../services/tweet_service';
 import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
-
 const Explore = () => {
     const [containerData, setContainerData] = useState([]);
     const [loading, isLoading] = useState(false);
@@ -78,7 +77,14 @@ const Explore = () => {
                         {
                             loading ? (<Loader />) :
                             (containerData.length > 0 &&
-                            <TweetList tweets={ containerData }/>)
+                            <TweetList tweets={ 
+                                AuthService.getCurrentUser() ? 
+                                containerData.filter(
+                                    (tweet) => {
+                                        return tweet.userId !== AuthService.getCurrentUser().id
+                                    }
+                                ) : containerData
+                            }/>)
                         }
                     </div>
                 </main>

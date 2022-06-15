@@ -187,8 +187,8 @@ const TweetItem = (props) => {
             </div>
             {
                 tweet.comments.length > 0 &&
-                <div className="d-flex flex-column justify-content-center">
-                    <div className="d-flex flex-grow-1">Comments</div>
+                <div className="d-flex flex-column align-items-stretch">
+                    <div className="d-flex px-3 mb-2 border-bottom border-top">Comments</div>
                     {
                         tweet.comments.map(
                             (comment) => {
@@ -197,18 +197,18 @@ const TweetItem = (props) => {
                                 
                                 return (
                                     <div key={ comment.id } 
-                                        className="d-flex">
+                                        className="d-flex ">
                                         <Avatar divClassName={ `ms-3` }
                                         imgSrc={ `${ fileImageBaseUrl }/profile/${ comment.commenter.userImage }` }
                                         imgAlt={ `${ commenterFirstName }-pic` }
                                         imgAvatarSize="avatar-img-size-2"  />
                                         <div className="flex-grow-1 px-3 flex-column">
-                                            <div>
-                                                <p>{ commenterFirstName } { commenterLastName }</p>
-                                            </div>
-                                            <div>
+                                            <span className="d-block d-flex">
+                                                { commenterFirstName } { commenterLastName }
+                                            </span>
+                                            <span className="d-block d-flex">
                                                 { comment.text }
-                                            </div>
+                                            </span>
                                         </div>
                                     </div>
                                 )
@@ -217,7 +217,10 @@ const TweetItem = (props) => {
                     }
                 </div>
             }
-            <hr />
+            <hr 
+                style={{
+                height: "0.5rem"
+            }}/>
         </React.Fragment>
     )
 }

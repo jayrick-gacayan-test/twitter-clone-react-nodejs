@@ -16,7 +16,6 @@ import './danger.modal.css';
 import ModalUtility from '../../utilities/modal_utility';
 
 const LeftSideContent = () => {
-    //const { id } = AuthService.getCurrentUser();
     let navigate = useNavigate();
 
     const logOut = () => {
@@ -39,12 +38,9 @@ const LeftSideContent = () => {
     return (
         <React.Fragment>
             <nav id="sidebar-navigation" 
-                className="col-lg-3 d-none d-lg-block border-end">
+                className="col-lg-3 border-end">
                 <div id="sidebar-content" 
-                    className="p-lg-3 bg-white p-3 d-flex justify-content-between flex-column"
-                    style={{
-                        height: "100%"
-                    }}>
+                    className="p-lg-3 bg-white p-3 d-flex justify-content-between flex-column h-100">
                     <SideNavigation userId={ AuthService.getCurrentUser() ? AuthService.getCurrentUser().id: null }/>
                     {
                         AuthService.getCurrentUser() && 
