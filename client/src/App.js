@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 /* bootstrap node module */
@@ -19,9 +19,9 @@ import Explore from './components/Explore';
 import Search from './components/Search';
 
 /* context */
-import { AuthProvider } from './contexts/auth_context';
-
-function App(){
+import AuthProvider from './contexts/auth_context';
+const App = () => {
+    
     return(
         <React.Fragment>
             <AuthProvider>

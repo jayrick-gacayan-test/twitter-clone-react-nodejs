@@ -17,9 +17,7 @@ import Loader from './layouts/Loader';
 import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
-
 const Profile = () => {
-    //const { id } = AuthService.getCurrentUser();
     const { userId } = useParams();
     let location = useLocation();
     let navigate = useNavigate();
@@ -34,7 +32,7 @@ const Profile = () => {
         lastName: "",
         userImage: ""
     });
-
+    
     useEffect(
         () => {
             isLoading(true);

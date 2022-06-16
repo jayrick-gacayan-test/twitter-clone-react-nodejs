@@ -1,8 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
-import AuthService from '../services/auth_service';
+
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
     const [ user, setUser ] = useState(null);
     const [ token, setToken ] = useState(null);
 
@@ -11,15 +11,27 @@ export const AuthProvider = ({ children }) => {
         setUser(user);
     }
 
+    const setCurrentAccount = (token, user) => {
+        setToken(token);
+        setUser(user);
+    }
+
+    const logoutUser = () => {
+        setUser(null);
+        setToken(null);
+    }
+    
     useEffect(
         () => {
-
+           
         }
         ,[]);
 
     return(
-        <AuthContext.Provider value={ { user, logUser } }>
+        <AuthContext.Provider value={ { user, token, logUser, logoutUser, setCurrentAccount} }>
             { children }
         </AuthContext.Provider>
     );
 };
+
+export default AuthProvider;

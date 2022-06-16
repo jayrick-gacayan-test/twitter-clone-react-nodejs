@@ -181,14 +181,30 @@ const TweetItem = (props) => {
                 </div>
                 <div>
                     <span>
-                        <i className="bi bi-chat-dots"></i>
+                        <i className="me-1 bi bi-chat-dots"
+                            data-bs-toggle="collapse" 
+                            data-bs-target={ `#collapseTweetId${ tweet.id }` }
+                            aria-expanded="false" 
+                            aria-controls={ `collapseTweetId${ tweet.id }` }></i>
+                        { tweet.comments.length > 0 && <span>{ tweet.comments.length }</span> }
                     </span>
                 </div>
             </div>
             {
                 tweet.comments.length > 0 &&
-                <div className="d-flex flex-column align-items-stretch">
-                    <div className="d-flex px-3 mb-2 border-bottom border-top">Comments</div>
+                <div id={ `collapseTweetId${ tweet.id }` } className="collapse flex-column align-items-stretch">
+                    <div className="d-flex px-3 mb-2 border-bottom border-top py-1">Comments</div>
+                    <div className="d-flex px-3 mb-2">
+                        
+                        <div className="mb-2 mt-2">
+                            <input type="text" 
+                                className={ `form-control px-3 rounded-pill` } 
+                                id="comment" 
+                                placeholder="Leave a comment to the tweet." 
+                                name="text"/>
+                            <label htmlFor="comment">Comment</label>
+                        </div>
+                    </div>
                     {
                         tweet.comments.map(
                             (comment) => {

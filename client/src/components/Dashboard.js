@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -15,9 +15,11 @@ import TweetService from '../services/tweet_service';
 import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
+import { AuthContext } from '../contexts/auth_context';
 const Dashboard = () => {
     const { id } = AuthService.getCurrentUser();
-    
+    const { user, token, setCurrentAccount } = useContext(AuthContext);
+
     const initialTweet = {
             userId: id,
             title: "",
@@ -53,7 +55,7 @@ const Dashboard = () => {
                 clearTimeout(fetchUserTweetTimeout);
                 window.removeEventListener('resize', handleResize);
             }
-        }, []
+        }, [ user, token]
     );
     
     const handleInputChange = (event) => {
