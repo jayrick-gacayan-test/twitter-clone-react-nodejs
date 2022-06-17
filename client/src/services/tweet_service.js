@@ -60,6 +60,17 @@ const likeTweet = (tweetId, userId) => {
                     );
 }
 
+const commentTweet = (text, tweetId, userId) => {
+    return axios.post(API_URL + `${ tweetId }/comment`,
+                        {
+                            text,
+                            userId
+                        },
+                        {
+                            headers : authHeader()
+                        });
+}
+
 const TweetService = {
     createTweet,
     getUserTweets,
@@ -67,6 +78,7 @@ const TweetService = {
     deleteTweet,
     updateTweet,
     likeTweet,
+    commentTweet,
     getTweets
 }
 

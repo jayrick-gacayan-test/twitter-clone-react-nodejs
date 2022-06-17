@@ -1,37 +1,47 @@
 import React, { createContext, useEffect, useState } from 'react';
+import AuthService from '../services/auth_service';
 
 export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-    const [ user, setUser ] = useState(null);
+export const AuthProvider = ({ children }) => {
+    const [ authUser, setAuthUser ] = useState(null);
     const [ token, setToken ] = useState(null);
 
     const logUser = (token, user) =>{
         setToken(token);
-        setUser(user);
-    }
-
-    const setCurrentAccount = (token, user) => {
-        setToken(token);
-        setUser(user);
+        setAuthUser(user);
     }
 
     const logoutUser = () => {
-        setUser(null);
+        setAuthUser(null);
         setToken(null);
+        localStorage.removeItem("user");
     }
     
     useEffect(
         () => {
-           
+            if(AuthService.getCurrentUser()){
+                let { accessToken, id } = AuthService.getCurrentUser();
+
+                if(accessToken)
+                    AuthService.getAuthUser(id)
+                            .then(
+                                (response) => {
+                                    setToken(token);
+                                    setAuthUser(response.data)
+                                },
+                                (error) => {
+                                    console.log(error);
+                                } 
+                            );
+            }
+            else localStorage.removeItem("user");
         }
-        ,[]);
+        ,[ token ]);
 
     return(
-        <AuthContext.Provider value={ { user, token, logUser, logoutUser, setCurrentAccount} }>
+        <AuthContext.Provider value={ { authUser, token, logUser, logoutUser } }>
             { children }
         </AuthContext.Provider>
     );
 };
-
-export default AuthProvider;

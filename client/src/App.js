@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 /* bootstrap node module */
@@ -19,7 +19,7 @@ import Explore from './components/Explore';
 import Search from './components/Search';
 
 /* context */
-import AuthProvider from './contexts/auth_context';
+import { AuthProvider } from './contexts/auth_context';
 const App = () => {
     
     return(

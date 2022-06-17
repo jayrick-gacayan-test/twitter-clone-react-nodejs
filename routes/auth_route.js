@@ -1,3 +1,4 @@
+const { authorizeJwt } = require("../middlewares");
 const authController = require('../controllers').auth;
 const router = require('express').Router();
 
@@ -16,5 +17,7 @@ module.exports = (app) => {
     
     router.post("/register", authController.register);
     router.post("/login", authController.logIn);
-    
+    router.get("/:userId/auth", 
+                [ authorizeJwt.verifyToken ],
+                authController.authUser);    
 }

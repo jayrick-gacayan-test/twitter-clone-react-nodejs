@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -15,10 +15,13 @@ import TweetService from '../services/tweet_service';
 import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
+import { AuthContext } from '../contexts/auth_context';
+
 const Explore = () => {
     const [containerData, setContainerData] = useState([]);
     const [loading, isLoading] = useState(false);
     
+    console.log("User auth --- ", useContext(AuthContext).authUser);
     useEffect(
         () => {
             isLoading(true);

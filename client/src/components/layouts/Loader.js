@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default () => {
+const Loader = () => {
     return (
         <div className="d-flex justify-content-center p-3">
             <div className="spinner-border fs-3" 
@@ -10,3 +10,5 @@ export default () => {
         </div>
     );
 }
+
+export default Loader;
