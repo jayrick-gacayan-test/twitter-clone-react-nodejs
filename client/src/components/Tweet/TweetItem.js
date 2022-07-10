@@ -1,20 +1,26 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import Avatar from "../layouts/Avatar";
+import CommentList from "../Comment/CommentList";
 
 /* services */ 
 import AuthService from "../../services/auth_service";
 import TweetService from "../../services/tweet_service";
 
+import { AuthContext } from "../../contexts/auth_context";
+
 /* utilities and helpers */
 import ModalUtility from "../../utilities/modal_utility";
-import Avatar from "../layouts/Avatar";
+import { TimePassed } from "../../utilities/date_utility";
+
 const fileImageBaseUrl = "http://localhost:3001/files";
 
 const TweetItem = (props) => {
     let navigate = useNavigate();
     const { tweet } = props;
     
-    const tweetDate = new Date(tweet.createdAt);
+    const { authUser } = useContext(AuthContext);
     
     const tweetFirstName = tweet.user.firstName || "";
     const tweetLastName = tweet.user.lastName || "";  
@@ -38,9 +44,52 @@ const TweetItem = (props) => {
                         (tweetLikes.filter((like) => { return like.isLiked; })).length
                     );
     
+    const [ commentText, setCommentText ] = useState("");
+    const [tweetComments, setTweetComments] = useState(tweet.comments);
+    const [commentsCount, setCommentsCount] = useState(tweetComments.length);
+    
     const openDeleteTweetModal = () => {
         const modalDeleteTweet = document.getElementById('modalDeleteTweet');
         ModalUtility.showModal(modalDeleteTweet);
+    }
+
+    const handleInputCommentChange = (event) => {
+        const { value } = event.target;
+
+        setCommentText(value);
+    }
+
+    const handleInputCommentKeyDown = (event) => {
+        
+        if(event.key === "Enter")
+        {
+            if(commentText === "") return;
+
+            TweetService.commentTweet(commentText, tweet.id, authUser.id)
+                .then(
+                    (response) => {
+                        console.log("Response data --- ", response.data);
+
+                        setTweetComments([ ...tweetComments, {
+                            ...response.data, commenter: authUser
+                        }]);
+
+                        setCommentsCount(tweetComments);
+
+                        setCommentText("");
+                    },
+                    (error) => {
+                        const resMessage =
+                            (error.response &&
+                            error.response.data &&
+                            error.response.data.error) ||
+                            error.message ||
+                            error.toString() || error;
+
+                        alert(resMessage);
+                    }
+                );
+        }
     }
 
     const handleLikeTweet = (tweetId) => {
@@ -104,7 +153,7 @@ const TweetItem = (props) => {
                         imgAvatarSize="avatar-img-size-1"  />
                 <div className="flex-grow-1 px-3">
                     <div
-                        className="d-block text-decoration-none text-dark"
+                        className="d-block text-decoration-none text-dark bg-secondary opacity-75 text-white rounded-3 py-1 px-3"
                         style={{
                             cursor: "pointer"
                         }}>
@@ -115,15 +164,10 @@ const TweetItem = (props) => {
                                 }
                             }>
                                 <span className="me-1">{ tweetName }</span>
-                                <span className="me-1">@{ tweet.user.email }</span>
-                                <span className="me-1">
-                                    { tweetDate.toLocaleString("default", { month: "short" }) }
-                                    { " " }
-                                    { tweetDate.getDate() }
-                                    { " " }
-                                    { new Date().getFullYear() !== tweetDate.getFullYear() &&
-                                        tweetDate.getFullYear() }
-                                </span>
+                                
+                                <TimePassed date={ tweet.createdAt } 
+                                            spanClassName="me-1"/>
+                                <span className="me-1 d-block">@{ tweet.user.email }</span>
                             </div>
                             {
                                 ( AuthService.getCurrentUser() &&
@@ -181,42 +225,53 @@ const TweetItem = (props) => {
                 </div>
                 <div>
                     <span>
-                        <i className="bi bi-chat-dots"></i>
+                        <i className="me-1 bi bi-chat-dots"
+                            data-bs-toggle="collapse" 
+                            data-bs-target={ `#collapseTweetId${ tweet.id }` }
+                            aria-expanded="false" 
+                            aria-controls={ `collapseTweetId${ tweet.id }` }></i>
+                        { commentsCount > 0 && <span>{ commentsCount }</span> }
                     </span>
                 </div>
             </div>
-            {
-                tweet.comments.length > 0 &&
-                <div className="d-flex flex-column align-items-stretch">
-                    <div className="d-flex px-3 mb-2 border-bottom border-top">Comments</div>
-                    {
-                        tweet.comments.map(
-                            (comment) => {
-                                const commenterFirstName = comment.commenter.firstName || "";
-                                const commenterLastName = comment.commenter.lastName || "";
-                                
-                                return (
-                                    <div key={ comment.id } 
-                                        className="d-flex ">
-                                        <Avatar divClassName={ `ms-3` }
-                                        imgSrc={ `${ fileImageBaseUrl }/profile/${ comment.commenter.userImage }` }
-                                        imgAlt={ `${ commenterFirstName }-pic` }
-                                        imgAvatarSize="avatar-img-size-2"  />
-                                        <div className="flex-grow-1 px-3 flex-column">
-                                            <span className="d-block d-flex">
-                                                { commenterFirstName } { commenterLastName }
-                                            </span>
-                                            <span className="d-block d-flex">
-                                                { comment.text }
-                                            </span>
-                                        </div>
+            <div id={ `collapseTweetId${ tweet.id }` } className="collapse flex-column align-items-stretch">
+                    <div className="d-flex px-3 mb-2 border-bottom border-top py-1">Comments</div>
+                    <div className="d-flex px-3 mb-2 border-bottom">
+                        {
+                            authUser && 
+                            (
+                                <Avatar divClassName={ `me-3 mt-2` }
+                                    imgSrc={ `${ fileImageBaseUrl }/profile/${ authUser.userImage }` }
+                                    imgAlt={ `${ authUser.firstName }-pic` }
+                                    imgAvatarSize="avatar-img-size-1"  />
+                            )
+                        }
+                        <div className="d-flex flex-column mb-2 mt-2 flex-grow-1 align-items-stretch">
+                            {
+                                authUser &&
+                                (
+                                    <div className="mb-1">
+                                        <span className="d-block fs-6 fw-normal text-dark">{ authUser.firstName } { authUser.lastName }</span>
                                     </div>
                                 )
                             }
-                        )
+                            <div className="mb-1">
+                                <input type="text" 
+                                    className={ `form-control rounded-pill` } 
+                                    id="comment" 
+                                    placeholder="Leave a comment to the tweet." 
+                                    name="text"
+                                    value={ commentText }
+                                    onChange={ handleInputCommentChange }
+                                    onKeyDown={ handleInputCommentKeyDown }/>
+                            </div>
+                        </div>
+                    </div>
+                    {
+                        tweetComments.length > 0 &&
+                        <CommentList comments={ tweetComments } />
                     }
-                </div>
-            }
+            </div>
             <hr 
                 style={{
                 height: "0.5rem"

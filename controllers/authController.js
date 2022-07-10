@@ -3,7 +3,8 @@ const bcrypt = require("bcryptjs");
 const config = require('../config/config');
 
 /* models */
-const User = require("../models").User;
+const database = require('../models');
+const User = database.User;
 
 const errorBreakdown = (errors) => {
     const errObj = {};
@@ -109,4 +110,17 @@ exports.logIn = async (req, res) => {
                 });
             }
         );
+}
+
+exports.authUser = async (req, res) => {
+    const userId = req.params.userId;
+
+    return await User.findByPk(userId,
+                            {
+                                attributes: {
+                                    exclude: ["password", "createdAt", "updatedAt"]
+                                }
+                            })
+                    .then((user) => { return res.status(200).send(user); })
+                    .catch((error) => { return res.status(400).send(error)});
 }

@@ -85,7 +85,7 @@ function SideNavigationMenuLink({ label, to, icon, activeOnlyWhenExact}){
             <Link className={ `nav-link fs-2 ${ match ? ' active': '' }` }
                 to={ to }>
                 <h6>
-                    <i className={ `bi bi-${icon} me-3` }></i>
+                    <i className={ `bi bi-${ icon } me-3` }></i>
                     { label }
                 </h6>
             </Link>

@@ -20,8 +20,8 @@ import Search from './components/Search';
 
 /* context */
 import { AuthProvider } from './contexts/auth_context';
-
-function App(){
+const App = () => {
+    
     return(
         <React.Fragment>
             <AuthProvider>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 /* Components */
 import LeftSideContent from './layouts/LeftSideContent';
@@ -15,8 +15,12 @@ import TweetService from '../services/tweet_service';
 import { getScreenDimension } from '../utilities/screen_utility';
 import { sidebarResponsive } from '../utilities/sidebar_navigation_utility';
 
+import { AuthContext } from '../contexts/auth_context';
+import Avatar from './layouts/Avatar';
+const fileImageBaseUrl = "http://localhost:3001/files";
 const Dashboard = () => {
     const { id } = AuthService.getCurrentUser();
+    const { authUser } = useContext(AuthContext);
     
     const initialTweet = {
             userId: id,
@@ -24,6 +28,7 @@ const Dashboard = () => {
             content: ""
         }
     
+    console.log("Auth user ---- ", authUser);
     const [tweet, setTweet] = useState(initialTweet);
     const [allTweet, setAllTweet] = useState([]);
     const [loading, isLoading] = useState(false);
@@ -53,7 +58,7 @@ const Dashboard = () => {
                 clearTimeout(fetchUserTweetTimeout);
                 window.removeEventListener('resize', handleResize);
             }
-        }, []
+        }, [ id ]
     );
     
     const handleInputChange = (event) => {
@@ -101,37 +106,48 @@ const Dashboard = () => {
                 <main className="col-lg-6 offset-lg-3 g-0 border-end">
                     <TopMostContent title="Home" />
                     <hr className="m-0"/>
-                    <div className="container-fluid py-2 px-3 mb-3">
-                        <form onSubmit={ handleTweetSubmit }>
-                            <div className="form-floating mb-3 mt-3">
-                                <input type="text" 
-                                    className="form-control" 
-                                    id="title" 
-                                    placeholder="Enter title" 
-                                    name="title"
-                                    value={ tweet.title }
-                                    onChange={ handleInputChange } />
-                                <label htmlFor="title">Title</label>
-                            </div>
-                            <div className="form-group">
-                            
-                                <textarea className="form-control mb-3"
-                                        style={{
-                                            maxHeight: "150px",
-                                            height: "150px",
-                                            resize: "none"
-                                        }}
-                                        placeholder="What's happening?"
-                                        name="content"
-                                        value={ tweet.content }
-                                        onChange={ handleInputChange }>
-                                </textarea>
-                            </div>
-                            <div className="d-block w-100 clearfix">
-                                <button type="submit" 
-                                    className="btn btn-info text-white rounded-pill float-end">Tweet</button>
-                            </div>
-                        </form>
+                    <div className="container-fluid d-flex py-2 px-3 mb-3">
+                        {
+                            authUser &&
+                            (
+                                <Avatar divClassName={ `me-3 mt-3` }
+                                        imgSrc={ `${ fileImageBaseUrl }/profile/${ authUser.userImage }` }
+                                        imgAlt={ `${ authUser.firstName }-pic` }
+                                        imgAvatarSize="avatar-img-size-1"  />
+                            )
+                        }
+                        <div className="flex-grow-1 flex-column">
+                            <form onSubmit={ handleTweetSubmit }>
+                                <div className="form-floating mb-3 mt-3">
+                                    <input type="text" 
+                                        className="form-control" 
+                                        id="title" 
+                                        placeholder="Enter title" 
+                                        name="title"
+                                        value={ tweet.title }
+                                        onChange={ handleInputChange } />
+                                    <label htmlFor="title">Title</label>
+                                </div>
+                                <div className="form-group">
+                                
+                                    <textarea className="form-control mb-3"
+                                            style={{
+                                                maxHeight: "150px",
+                                                height: "150px",
+                                                resize: "none"
+                                            }}
+                                            placeholder="What's happening?"
+                                            name="content"
+                                            value={ tweet.content }
+                                            onChange={ handleInputChange }>
+                                    </textarea>
+                                </div>
+                                <div className="d-block w-100 clearfix">
+                                    <button type="submit" 
+                                        className="btn btn-info text-white rounded-pill float-end">Tweet</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                     <hr />
                     <div className="container-fluid g-0">

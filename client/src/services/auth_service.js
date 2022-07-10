@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from './auth_header';
 const API_URL = "http://localhost:3001/api/user/"
 
 const register = (email, password, cfpswd) => {
@@ -18,18 +19,11 @@ const login = (email, password) => {
     })
     .then(
         (response) => {
-            const { id, email, accessToken } = response.data;
-            if (response.data.accessToken) {
-                localStorage.setItem("user", 
-                                        JSON.stringify(
-                                            {
-                                                id, 
-                                                email,
-                                                accessToken 
-                                            }
-                                        )
-                                    );
-            }
+            const { id, accessToken } = response.data;
+            if (response.data.accessToken)
+                localStorage.setItem("user",
+                        JSON.stringify({ id, accessToken }));
+            
             return response.data;
         }
     );
@@ -43,11 +37,19 @@ const getCurrentUser = () => {
     return JSON.parse(localStorage.getItem("user"));
 }
 
+const getAuthUser = (userId) => {
+    return axios.get(API_URL + `${ userId }/auth`,
+                    {
+                        headers: authHeader()
+                    });
+}
+
 const AuthService = {
     register,
     login,
     logout,
-    getCurrentUser
+    getCurrentUser,
+    getAuthUser
 };
 
 export default AuthService;
